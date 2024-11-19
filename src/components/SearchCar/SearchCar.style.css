@@ -1,0 +1,23 @@
+.search {
+    top: 80px;
+    position: relative;
+    text-align: center;
+
+}
+
+
+.search__box {
+    display: flex;
+    gap: 10%;
+    flex-direction: column;
+}
+
+.search__grid {
+    padding: 20px;
+
+}
+
+.search__btn {
+    height: 35px;
+    width: 50px;
+}

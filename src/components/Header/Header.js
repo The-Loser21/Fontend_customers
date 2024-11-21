@@ -18,7 +18,16 @@ import { useDispatch } from "react-redux";
 import { changeColor } from '../../store/slices/themeSlice';
 import { Link } from 'react-scroll';
 
-const pages = ['home', 'service', 'cars', 'featured-cars', 'review'];
+const pageMappings = {
+  home: "Trang chủ",
+  // service: "Xe tốt",
+  cars: "Xe mới",
+  "featured-cars": "Xe",
+  review: "Nhà phát triển",
+};
+
+const pages = Object.keys(pageMappings);
+
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
@@ -119,10 +128,11 @@ export const Header = () => {
               {pages.map((page) => (
                 <MenuItem key={page} onClick={() => setAnchorElNav(null)}>
                   <Link to={page} smooth={true} duration={500} offset={-70}>
-                    <Typography textAlign="center">{page}</Typography>
+                    <Typography textAlign="center">{pageMappings[page]}</Typography>
                   </Link>
                 </MenuItem>
               ))}
+
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -148,11 +158,12 @@ export const Header = () => {
             {pages.map((page) => (
               <Link key={page} to={page} smooth={true} duration={500} offset={-70}>
                 <Button sx={{ my: 2, color: 'white' }}>
-                  {page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')}
+                  {pageMappings[page]}
                 </Button>
               </Link>
             ))}
           </Box>
+
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -195,3 +206,6 @@ export const Header = () => {
     </AppBar>
   );
 }
+
+
+

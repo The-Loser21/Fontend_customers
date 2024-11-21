@@ -8,11 +8,15 @@ body {
 /* Đặt container chính cho phần car detail */
 .car-detail-container {
   display: flex;
-  justify-content: flex-start; /* Căn trái */
-  align-items: flex-start; /* Căn trên */
+  justify-content: center;
+  /* Căn giữa theo chiều ngang */
+  align-items: center;
+  /* Căn giữa theo chiều dọc */
   height: 100vh;
+  /* Đảm bảo container chiếm toàn bộ chiều cao của màn hình */
   padding: 20px;
-  background-color: #f7f7f7; /* Màu nền nhẹ */
+  background-color: #f7f7f7;
+  /* Màu nền nhẹ */
 }
 
 /* Header với chiều cao 300px */
@@ -33,23 +37,30 @@ header {
   border-radius: 10px;
   padding: 30px;
   width: 100%;
-  max-width: 600px; /* Giảm độ rộng content */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Tạo bóng mờ nhẹ cho content */
-  text-align: left; /* Căn trái nội dung */
-  margin-top: 20px; /* Cách phần header một chút */
+  max-width: 600px;
+  /* Giảm độ rộng content */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* Tạo bóng mờ nhẹ cho content */
+  text-align: left;
+  /* Căn trái nội dung */
+  margin-top: 20px;
+  /* Cách phần header một chút */
 }
 
 /* Tiêu đề phần chi tiết xe */
 .car-detail-content h1 {
-  font-size: 1.8rem; /* Giảm kích thước font */
+  font-size: 1.8rem;
+  /* Giảm kích thước font */
   color: #333;
   margin-bottom: 20px;
 }
 
 /* Định dạng ảnh */
 .car-detail-content img {
-  width: 100%; /* Giữ nguyên tỷ lệ ảnh */
-  max-width: 500px; /* Giới hạn kích thước ảnh */
+  width: 100%;
+  /* Giữ nguyên tỷ lệ ảnh */
+  max-width: 500px;
+  /* Giới hạn kích thước ảnh */
   height: auto;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -65,53 +76,74 @@ header {
 /* Định dạng cho giá */
 .car-detail-content .price {
   font-size: 1.2rem;
-  color: #e74c3c; /* Màu đỏ cho giá */
+  color: #e74c3c;
+  /* Màu đỏ cho giá */
   font-weight: bold;
 }
 
 /* Định dạng cho năm */
 .car-detail-content .year {
   font-size: 1.1rem;
-  color: #3498db; /* Màu xanh dương cho năm */
+  color: #3498db;
+  /* Màu xanh dương cho năm */
 }
+
 /* Định dạng chung cho các nút */
 .car-detail-content button {
-  padding: 12px 24px; /* Thêm không gian trong nút */
-  font-size: 1rem; /* Kích thước chữ */
-  border: none; /* Xóa viền mặc định */
-  border-radius: 5px; /* Bo góc cho nút */
-  cursor: pointer; /* Đổi con trỏ khi hover */
-  font-weight: bold; /* Làm cho chữ đậm */
-  transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng khi hover */
-  margin: 10px; /* Khoảng cách giữa các nút */
+  padding: 12px 24px;
+  /* Thêm không gian trong nút */
+  font-size: 1rem;
+  /* Kích thước chữ */
+  border: none;
+  /* Xóa viền mặc định */
+  border-radius: 5px;
+  /* Bo góc cho nút */
+  cursor: pointer;
+  /* Đổi con trỏ khi hover */
+  font-weight: bold;
+  /* Làm cho chữ đậm */
+  transition: background-color 0.3s, transform 0.3s;
+  /* Hiệu ứng khi hover */
+  margin: 10px;
+  /* Khoảng cách giữa các nút */
 }
 
 /* Màu nền cho nút Chi tiết */
 .car-detail-content button:nth-child(1) {
-  background-color: #3498db; /* Màu xanh dương */
-  color: white; /* Chữ màu trắng */
+  background-color: #3498db;
+  /* Màu xanh dương */
+  color: white;
+  /* Chữ màu trắng */
 }
 
 /* Màu nền cho nút So Sánh */
 .car-detail-content button:nth-child(2) {
-  background-color: #e74c3c; /* Màu đỏ */
-  color: white; /* Chữ màu trắng */
+  background-color: #e74c3c;
+  /* Màu đỏ */
+  color: white;
+  /* Chữ màu trắng */
 }
 
 /* Hiệu ứng hover cho nút */
 .car-detail-content button:hover {
-  background-color: #2980b9; /* Đổi màu khi hover (nút Chi tiết) */
-  transform: translateY(-3px); /* Tạo hiệu ứng nâng lên */
+  background-color: #2980b9;
+  /* Đổi màu khi hover (nút Chi tiết) */
+  transform: translateY(-3px);
+  /* Tạo hiệu ứng nâng lên */
 }
 
 /* Hiệu ứng hover cho nút So Sánh */
 .car-detail-content button:nth-child(2):hover {
-  background-color: #c0392b; /* Đổi màu khi hover (nút So Sánh) */
-  transform: translateY(-3px); /* Tạo hiệu ứng nâng lên */
+  background-color: #c0392b;
+  /* Đổi màu khi hover (nút So Sánh) */
+  transform: translateY(-3px);
+  /* Tạo hiệu ứng nâng lên */
 }
 
 /* Hiệu ứng focus (khi người dùng click vào nút) */
 .car-detail-content button:focus {
-  outline: none; /* Xóa outline mặc định */
-  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5); /* Tạo hiệu ứng sáng xung quanh nút */
+  outline: none;
+  /* Xóa outline mặc định */
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+  /* Tạo hiệu ứng sáng xung quanh nút */
 }

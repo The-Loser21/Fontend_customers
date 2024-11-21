@@ -13,7 +13,7 @@ export const Hero = () => {
             <section id="hero" class="hero">
                 <div class="hero__container">
                     <div class="hero__txt">
-                        <h2 style={{ color: theme }}>get your desired car in resonable price</h2>
+                        <h2 style={{ color: theme }}>Chào Mừng Đến Với Haui-Car</h2>
                         <p style={{ color: theme }}>
                             Welcom to HAUI-Car.
                         </p>

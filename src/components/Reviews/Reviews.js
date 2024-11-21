@@ -8,13 +8,13 @@ export const Reviews = () => {
 
   const reviews = [{ name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c1 },
   { name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c2 }, { name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c3 }]
- 
- 
+
+
   const Review = ({ review }) => {
     return (
       <div class="single-review-item">
         <div class="single-review-icon">
-        <img src={review.image} />
+          <img src={review.image} />
         </div>
         <p>
           {review.review}
@@ -28,7 +28,7 @@ export const Reviews = () => {
     <section id="review" class="review">
       <div class="container">
         <div class="title">
-          <h2>NUMBERS DON'T LIE - Reviews</h2>
+          <h2>Những nhà phát triển</h2>
         </div>
         <div class="review-content">
           {reviews.map((review) => (

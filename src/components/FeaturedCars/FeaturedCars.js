@@ -77,8 +77,9 @@ export const FeaturedCars = () => {
         <section id="featured-cars" className="featured-cars" ref={containerRef}>
             <div className="featured-cars__container">
                 <div className="featured-cars__header">
-                    <h2>Checkout <span>the</span> featured cars</h2>
-                    <p>featured cars</p>
+                    {/* <h2>Checkout <span>the</span> featured cars</h2>
+                    <p>featured cars</p> */}
+                    <h2>Danh sách xe</h2>
                 </div>
                 <div className="featured-cars__content">
                     <Box sx={{ width: 1, padding: '0 100px' }}>

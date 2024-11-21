@@ -99,7 +99,7 @@ export const SearchCar = () => {
                     gap: '20px'
                 }}
             >
-                <h2 style={{ whiteSpace: 'nowrap', marginRight: 8 }}>Search Oto</h2>
+                <h2 style={{ whiteSpace: 'nowrap', marginRight: 8 }}>Tìm kiếm oto</h2>
                 <TextField
                     variant="outlined"
                     placeholder="Enter car model, brand, or year"
@@ -113,7 +113,7 @@ export const SearchCar = () => {
                     variant="contained"
                 // onClick={handleSearch} Gọi hàm handleSearch khi nhấn nút
                 >
-                    SEARCH
+                    Tìm
                 </Button>
             </Box>
         </Container>

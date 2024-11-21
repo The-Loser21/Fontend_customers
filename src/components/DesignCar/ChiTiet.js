@@ -9,6 +9,7 @@ import fc8 from '../assets/fc8.png';
 import { Header } from '../Header/Header';
 import { Hero } from '../Hero/Hero';
 import './chitiet.css';
+import { Footer } from '../Footer/Footer';
 
 export const CarDetail = () => {
     const { id } = useParams(); // Lấy ID từ URL
@@ -46,6 +47,7 @@ export const CarDetail = () => {
 
     return (
         <>
+            <Header />
             <div style={{ height: '550px' }}>
                 <Hero />
             </div>
@@ -62,6 +64,8 @@ export const CarDetail = () => {
                     </div>
                 </div>
             </div>
+
+            <Footer />
         </>
 
     );

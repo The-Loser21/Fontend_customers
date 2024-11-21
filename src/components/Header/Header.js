@@ -16,8 +16,9 @@ import AdbIcon from '@mui/icons-material/Adb';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from "react-redux";
 import { changeColor } from '../../store/slices/themeSlice';
+import { Link } from 'react-scroll';
 
-const pages = ['home', 'service', 'cars', 'featured Cars', 'review'];
+const pages = ['home', 'service', 'cars', 'featured-cars', 'review'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
@@ -37,23 +38,14 @@ export const Header = () => {
   useEffect(() => {
     dispatch(changeColor(storageColor));
     localStorage.setItem('color', color);
-  }, [color]);
-
-
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
+  }, [color, dispatch]);
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
-    const element = document.getElementById("review");
-    element?.scrollIntoView({
-      behavior: 'smooth'
-    })
+
     setAnchorElUser(null);
   };
   const handleCloseUserMenu = () => {
@@ -125,8 +117,10 @@ export const Header = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem id={'nav_' + page} key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page} onClick={() => setAnchorElNav(null)}>
+                  <Link to={page} smooth={true} duration={500} offset={-70}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -152,13 +146,11 @@ export const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              <Link key={page} to={page} smooth={true} duration={500} offset={-70}>
+                <Button sx={{ my: 2, color: 'white' }}>
+                  {page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')}
+                </Button>
+              </Link>
             ))}
           </Box>
 

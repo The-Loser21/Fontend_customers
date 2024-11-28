@@ -74,13 +74,14 @@
 
 
 .featured-cars__header {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        padding-bottom: 22px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 22px;
 
 }
-.featured-cars__header h2{
+
+.featured-cars__header h2 {
     font-size: 32px;
     color: #000;
     font-weight: 700;
@@ -88,9 +89,42 @@
 
 }
 
-.featured-cars__header p{
+.featured-cars__header p {
     font-size: 22px;
     color: #4e4ffa;
     text-transform: uppercase;
-    
+
+}
+
+.featured-car__txt h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.featured-car__txt button {
+    background-color: #efefef;
+    /* Đổi màu khi hover (nút So Sánh) */
+    transform: translateY(-3px);
+    /* Tạo hiệu ứng nâng lên */
+    margin-right: 15px;
+    margin-top: 10px;
+    height: 25px;
+    width: 100px;
+    border-radius: 5px;
+    color: #1976db;
+}
+
+.filter-module h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.filter-module .MuiButton-outlined {
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+.filter-module .MuiButton-outlined:hover {
+    background-color: #f0f0f0;
 }

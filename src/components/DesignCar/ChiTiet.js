@@ -41,9 +41,7 @@ export const CarDetail = () => {
     const handleDetail = () => {
 
     }
-    const handleequal = () => {
 
-    }
 
     return (
         <>
@@ -60,7 +58,7 @@ export const CarDetail = () => {
                     <p>{car.pretitle}</p>
                     <div>
                         <button type='button' onClick={handleDetail}>Chi tiết</button>
-                        <button type='button' onClick={handleequal}>+ So Sánh</button>
+                        {/* <button type='button' onClick={handleequal}>+ So Sánh</button> */}
                     </div>
                 </div>
             </div>

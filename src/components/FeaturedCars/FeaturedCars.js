@@ -73,6 +73,10 @@ export const FeaturedCars = () => {
         );
     };
 
+    const handleequal = () => {
+
+    };
+
     return (
         <section id="featured-cars" className="featured-cars" ref={containerRef}>
             <div className="featured-cars__container">
@@ -80,6 +84,59 @@ export const FeaturedCars = () => {
                     {/* <h2>Checkout <span>the</span> featured cars</h2>
                     <p>featured cars</p> */}
                     <h2>Danh sách xe</h2>
+                    <Box className="filter-module" mt={0} sx={{ padding: '0 0' }}>
+                        <Box className="filter-module" mt={4} sx={{ padding: '0 100px' }}>
+                            {/* Bộ lọc hãng xe */}
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                                {/* <h3>Hãng xe</h3> */}
+                                <Box display="flex" flexWrap="wrap" gap={2}>
+                                    {["BMW", "Toyota", "Honda", "Mercedes", "Mazda"].map((brand, index) => (
+                                        <Button
+                                            key={index}
+                                            variant="outlined"
+                                            sx={{
+                                                textTransform: 'none',
+                                                borderRadius: '20px',
+                                                padding: '4px 12px',
+                                            }}
+                                            onClick={() => console.log(`Filter by brand: ${brand}`)}
+                                        >
+                                            {brand}
+                                        </Button>
+                                    ))}
+                                </Box>
+                            </Box>
+
+                            {/* Bộ lọc giá xe */}
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                {/* <h3>Giá xe</h3> */}
+                                <Box display="flex" flexWrap="wrap" gap={2}>
+                                    {[
+                                        "Dưới 100 triệu",
+                                        "100 - 300 triệu",
+                                        "300 - 500 triệu",
+                                        "500 - 700 triệu",
+                                        "700 triệu - 1 tỷ",
+                                        "Trên 1 tỷ",
+                                    ].map((priceRange, index) => (
+                                        <Button
+                                            key={index}
+                                            variant="outlined"
+                                            sx={{
+                                                textTransform: 'none',
+                                                borderRadius: '20px',
+                                                padding: '4px 12px',
+                                            }}
+                                            onClick={() => console.log(`Filter by price: ${priceRange}`)}
+                                        >
+                                            {priceRange}
+                                        </Button>
+                                    ))}
+                                </Box>
+                            </Box>
+                        </Box>
+
+                    </Box>
                 </div>
                 <div className="featured-cars__content">
                     <Box sx={{ width: 1, padding: '0 100px' }}>
@@ -97,6 +154,7 @@ export const FeaturedCars = () => {
                                     <div className="featured-car__txt">
                                         <h2>
                                             <Link to={`/car/${car.id}`}>{car.title}</Link> {/* Điều hướng đến trang chi tiết */}
+                                            <button type='button' onClick={handleequal}>+ So Sánh</button>
                                         </h2>
                                         <h3>{car.prize}</h3>
                                         <p>{car.pretitle}</p>

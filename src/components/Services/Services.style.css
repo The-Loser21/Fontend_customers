@@ -185,3 +185,22 @@
     font-weight: bold;
     text-align: center;
 }
+
+/* css so sánh */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.comparison-table th,
+.comparison-table td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+}
+
+.comparison-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}

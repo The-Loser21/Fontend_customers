@@ -20,9 +20,9 @@ import { Link } from 'react-scroll';
 
 const pageMappings = {
   home: "Trang chủ",
-  // service: "Xe tốt",
   cars: "Xe mới",
   "featured-cars": "Xe",
+  service: "So sánh xe",
   review: "Nhà phát triển",
 };
 

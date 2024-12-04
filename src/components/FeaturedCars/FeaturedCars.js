@@ -11,14 +11,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ChiTiet from '../DesignCar/ChiTiet';
 import { Link } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
 export const FeaturedCars = () => {
     const cars = [
-        { id: 1, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc1 },
-        { id: 2, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2024", pretitle: "Nemo enim ipsam voluptatem...", image: fc2 },
-        { id: 3, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc3 },
-        { id: 5, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc4 },
-        { id: 6, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc5 },
-        { id: 7, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc7 },
+        { id: 1, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc1 },
+        { id: 2, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2024", pretitle: "Nemo enim ipsam voluptatem...", image: fc2 },
+        { id: 3, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc3 },
+        { id: 5, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc4 },
+        { id: 6, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc5 },
+        { id: 7, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc7 },
         { id: 8, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc7 },
         { id: 9, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
         { id: 10, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
@@ -75,6 +76,20 @@ export const FeaturedCars = () => {
 
     const handleequal = () => {
 
+    };
+
+    // Trạng thái cho Modal so sánh
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCar, setSelectedCar] = useState(null); // Lưu thông tin xe được chọn
+
+    const handleOpenModal = (car) => {
+        setSelectedCar(car);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedCar(null);
     };
 
     return (
@@ -154,7 +169,12 @@ export const FeaturedCars = () => {
                                     <div className="featured-car__txt">
                                         <h2>
                                             <Link to={`/car/${car.id}`}>{car.title}</Link> {/* Điều hướng đến trang chi tiết */}
-                                            <button type='button' onClick={handleequal}>+ So Sánh</button>
+                                            <button
+                                                type='button'
+                                                onClick={() => handleOpenModal(car)}
+                                            >
+                                                + So Sánh
+                                            </button>
                                         </h2>
                                         <h3>{car.prize}</h3>
                                         <p>{car.pretitle}</p>
@@ -198,6 +218,64 @@ export const FeaturedCars = () => {
                     </Box>
                 </div>
             </div>
+
+            {/* Modal */}
+            <Modal
+                open={isModalOpen}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: '10px', // Đặt modal cách mép dưới màn hình 10px
+                        left: '50%',
+                        transform: 'translateX(-50%)', // Căn giữa theo chiều ngang
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: '8px',
+                    }}
+                >
+                    {selectedCar ? (
+                        <>
+                            <h2 id="modal-title">{selectedCar.title}</h2>
+                            <p id="modal-description">Giá: {selectedCar.prize}</p>
+                            <p>Năm sản xuất: {selectedCar.year}</p>
+                            <img src={selectedCar.image} alt={selectedCar.title} style={{ width: '100%' }} />
+                            <Button
+                                onClick={handleCloseModal}
+                                sx={{
+                                    mt: 2,
+                                    textTransform: 'none',
+                                    borderRadius: '20px',
+                                    backgroundColor: '#1976d2',
+                                    color: '#fff',
+                                }}
+                            >
+                                Đóng
+                            </Button>
+                            <Button
+                                onClick={handleCloseModal}
+                                sx={{
+                                    mt: 2,
+                                    textTransform: 'none',
+                                    borderRadius: '20px',
+                                    backgroundColor: '#1976d2',
+                                    color: '#fff',
+                                }}
+                            >
+                                Xác nhận so sánh
+                            </Button>
+                        </>
+                    ) : (
+                        <p>Không có thông tin xe.</p>
+                    )}
+                </Box>
+            </Modal>
+
         </section>
     );
 };

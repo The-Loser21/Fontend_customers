@@ -1,4 +1,4 @@
-.service{
+/* .service{
     padding: 160px 0 87px;
     
 }
@@ -53,4 +53,135 @@
 
 .single-service-item:hover h2 a,.single-service-item:hover p{color: #fff;}
 .single-service-item:hover  p:before {background: #fff;}
-.single-service-item:hover{box-shadow: 0 12px 30px 0px rgba(0,1,193,.2);background: #4e4ffa;border: 1px solid #4e4ffa;}
+.single-service-item:hover{box-shadow: 0 12px 30px 0px rgba(0,1,193,.2);background: #4e4ffa;border: 1px solid #4e4ffa;} */
+
+/* Container styles */
+.service-section {
+    margin-top: 100px;
+    background-color: #f3f4f6;
+    padding: 16px;
+}
+
+.service-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styles */
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.service-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.service-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Service item styles */
+.service-content {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+}
+
+.single-service-item {
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: 256px;
+}
+
+.service-image-container {
+    position: relative;
+}
+
+.service-image {
+    width: 100%;
+    height: 128px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #6b7280;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.service-name {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.service-options {
+    margin-top: 8px;
+}
+
+.service-select {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* Footer styles */
+.service-footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    text-align: center;
+    /* Căn giữa text */
+}
+
+/* Modal styling */
+.modal-field {
+    margin-bottom: 16px;
+}
+
+.modal-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.modal-field input {
+    width: 100%;
+}
+
+/* Optional styling for modal buttons */
+.MuiDialogActions-root {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.MuiDialogTitle-root {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
+}

@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { changeColor } from '../../store/slices/themeSlice';
 import { Link } from 'react-scroll';
 
+
 const pageMappings = {
   home: "Trang chủ",
   cars: "Xe mới",
@@ -74,6 +75,7 @@ export const Header = () => {
   }, []);
 
   return (
+    <>
     <AppBar className='navbar' position="sticky" style={{ background: appBarColor, boxShadow: 'none' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -204,6 +206,7 @@ export const Header = () => {
         </Toolbar>
       </Container>
     </AppBar>
+      </>
   );
 }
 

@@ -6,6 +6,8 @@ import { Reviews } from "../components/Reviews/Reviews";
 import { Footer } from "../components/Footer/Footer";
 import { NewCars } from "../components/NewCars/NewCars";
 
+import TopCarChart from "../components/topCar/topCarChart";
+
 const Admin = () => {
     const [selectedCars, setSelectedCars] = useState([]);
     const servicesRef = useRef(null); // Tạo ref để cuộn đến phần Services
@@ -37,6 +39,7 @@ const Admin = () => {
                     setSelectedCars((prev) => prev.filter((car) => car.id !== carId));
                 }}
             />
+            <TopCarChart />
             <Reviews />
             <Footer />
         </>

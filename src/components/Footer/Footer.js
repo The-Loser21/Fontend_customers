@@ -5,11 +5,13 @@ import XIcon from '@mui/icons-material/X';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {useSelector} from 'react-redux'
 
+
 export const Footer = () => {
   const theme = useSelector((state) => state.theme.value)
 
   return (
     <footer  className="footer"  style={{background: theme}}>
+         {/* Thêm biểu đồ vào trang chủ */}
       <div className="footer-content">
         <div className="footer-info">
           <p>Email: example@example.com</p>

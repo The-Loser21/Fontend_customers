@@ -1,102 +1,73 @@
-// import React from 'react'
-// import Box from '@mui/material/Box';
-// import Container from '@mui/material/Container';
-// import Grid from '@mui/material/Unstable_Grid2';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import { useSelector } from 'react-redux'
-// import Button from '@mui/material/Button';
-// import InputLabel from '@mui/material/InputLabel';
-// import Select from '@mui/material/Select';
-// import './SearchCar.style.css';
-// export const SearchCar = () => {
-//     const theme = useSelector((state) => state.theme.value)
-
-//     const inputsSearchCar = [{ value: "Model", label: "Model" }
-//         , { value: "Brand", label: "Brand" },
-//     { value: "Year", label: "Year" }, { value: "Model", label: "Model" }
-//         , { value: "Brand", label: "Brand" },
-//     { value: "Year", label: "Year" },]
-
-//     return (
-
-
-//         <Container className='search'  >
-//             <Box className="search__box" sx={{ display: 'flex', justifyContent: 'center', background: 'white', boxShadow: 4, borderRadius: '3px' }}>
-//                 <Grid className="search__grid" container spacing={{ xs: 2, md: 0 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-//                     {inputsSearchCar.map((input) => (
-//                         <Grid xs={2} sm={4} md={4}>
-//                             <FormControl variant="standard" sx={{ m: 1, width: "100%" }}>
-//                                 <InputLabel id="demo-simple-select-standard-label">{input.label}</InputLabel>
-//                                 <Select
-//                                     key={input}
-//                                     labelId="demo-simple-select-label"
-//                                     id="demo-simple-select"
-//                                     placeholder={input.label}
-//                                     value={input.value}
-//                                     label={input.label}
-//                                 >
-//                                     <MenuItem value={10}>Ten</MenuItem>
-//                                     <MenuItem value={20}>Twenty</MenuItem>
-//                                     <MenuItem value={30}>Thirty</MenuItem>
-//                                 </Select>
-//                             </FormControl>
-//                         </Grid>
-//                     ))}
-
-//                 </Grid>
-//                 <Button style={{ background: theme }} className='search__btn' variant="contained">SEARCH </Button>
-//             </Box>
-//         </Container>
-
-
-//     )
-// }
-
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
-// import axios from 'axios';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './SearchCar.style.css';
 
 export const SearchCar = () => {
     const theme = useSelector((state) => state.theme.value);
     const [searchQuery, setSearchQuery] = useState('');
+    const [cars, setCars] = useState([]); // Mảng chứa danh sách xe
+    const [loading, setLoading] = useState(false); // Trạng thái loading
+    const [error, setError] = useState(''); // Lỗi nếu có
+    const [isSearchVisible, setIsSearchVisible] = useState(false); // Trạng thái hiển thị bảng tìm kiếm
 
     // Hàm xử lý khi thay đổi giá trị ô input
     const handleInputChange = (e) => {
         setSearchQuery(e.target.value);
     };
 
-    // Hàm gửi yêu cầu đến backend, sau viết link API backend vào
-    // const handleSearch = async () => {
-    //     try {
-    //         const response = await axios.get('http://localhost:8080/api/search', {
-    //             params: { query: searchQuery }
-    //         });
-    //         console.log('Dữ liệu từ backend:', response.data);
-    //     } catch (error) {
-    //         console.error('Lỗi khi gọi API:', error);
-    //     }
-    // };
+    // Hàm xử lý tìm kiếm
+    const handleSearch = async () => {
+        if (!searchQuery) {
+            alert('Vui lòng nhập từ khóa tìm kiếm');
+            return;
+        }
+        setLoading(true);
+        setError('');
+        try {
+            const response = await axios.get(
+                `http://localhost:8088/api/v1/car/searchCar?keyword=${searchQuery}&page=1&limit=5&sort=name&direction=ASC`
+            );
+            console.log('tim', response.data.content);
+
+            // Kiểm tra xem dữ liệu trả về có đúng là mảng không
+            if (Array.isArray(response.data.content)) {
+                setCars(response.data.content); // Cập nhật danh sách xe
+                setIsSearchVisible(true); // Hiển thị bảng kết quả
+            } else {
+                setCars([]); // Nếu không phải mảng, gán mảng rỗng
+                setError('Dữ liệu không hợp lệ');
+            }
+        } catch (error) {
+            setError('Có lỗi xảy ra khi tìm kiếm');
+        }
+        setLoading(false);
+    };
+
+    // Hàm đóng bảng tìm kiếm
+    const closeSearchTable = () => {
+        setIsSearchVisible(false);
+    };
 
     return (
-        <Container className="search" >
+        <Container className="search">
             <Box
                 className="search__box"
                 sx={{
                     display: 'flex',
-                    flexDirection: 'row',       // Xếp các thành phần theo chiều ngang
+                    flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'white',
                     boxShadow: 4,
                     borderRadius: '3px',
                     padding: 2,
-                    gap: '20px'
+                    gap: '20px',
                 }}
             >
                 <h2 style={{ whiteSpace: 'nowrap', marginRight: 8 }}>Tìm kiếm oto</h2>
@@ -108,14 +79,53 @@ export const SearchCar = () => {
                     sx={{ marginRight: 1, width: '300px', flexGrow: 1 }}
                 />
                 <Button
-                    style={{ background: 'blue', color: 'white' }}
+                    style={{ background: theme, color: 'white' }}
                     className="search__btn"
                     variant="contained"
-                // onClick={handleSearch} Gọi hàm handleSearch khi nhấn nút
+                    onClick={handleSearch}
+                    disabled={loading}
                 >
-                    Tìm
+                    {loading ? 'Đang tìm kiếm...' : 'Tìm'}
                 </Button>
             </Box>
+
+            {/* Hiển thị kết quả tìm kiếm */}
+            {isSearchVisible && (
+                <div className="table-container">
+                    <button className="close-btn" onClick={closeSearchTable}>
+                        X
+                    </button>
+                    {error && <p className="error">{error}</p>}
+                    {cars && cars.length > 0 ? (
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Tên Xe</th>
+                                    <th>Model</th>
+                                    <th>Năm Sản Xuất</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {cars.map((car) => (
+                                    <tr key={car.id}>
+                                        <td>{car.name}</td>
+                                        <td>{car.model}</td>
+                                        <td>{car.year_manufacture}</td>
+                                        <td>
+                                            <Link to={`/car/${car.id}`}>
+                                                <button className="detail-btn">Chi tiết</button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p></p>
+                    )}
+                </div>
+            )}
         </Container>
     );
 };

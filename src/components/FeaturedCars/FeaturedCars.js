@@ -1,44 +1,87 @@
-import React, { useState, useRef } from 'react';
-import fc1 from '../assets/fc1.png';
-import fc2 from '../assets/fc2.png';
-import fc3 from '../assets/fc3.png';
-import fc4 from '../assets/fc4.png';
-import fc5 from '../assets/fc5.png';
-import fc7 from '../assets/fc7.png';
-import fc8 from '../assets/fc8.png';
+import React, { useState, useEffect, useRef, useParams } from 'react';
 import './FeaturedCars.style.css';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ChiTiet from '../DesignCar/ChiTiet';
 import { Link } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
-export const FeaturedCars = () => {
-    const cars = [
-        { id: 1, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc1 },
-        { id: 2, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2024", pretitle: "Nemo enim ipsam voluptatem...", image: fc2 },
-        { id: 3, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem...", image: fc3 },
-        { id: 5, title: "BMW 6-Series Gran Coupe", brand: "Toyota", model: "Camry", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc4 },
-        { id: 6, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc5 },
-        { id: 7, title: "BMW 6-Series Gran Coupe", brand: "BMW", model: "X5", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc7 },
-        { id: 8, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc7 },
-        { id: 9, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 10, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 11, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 12, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 13, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 14, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: fc8 },
-        { id: 15, title: "BMW 6-Series Gran Coupe", prize: "$89,395", year: "2017", pretitle: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia.", image: "fc3.png" },
+import axios from 'axios'; // Sử dụng axios để gửi yêu cầu API
+import fc1 from '../assets/fc1.png';
 
-    ];
+// Mảng chứa các ảnh mặc định cho các hãng xe
+const defaultImages = {
+    "BMW": "path_to_bmw_default_image", // Thay thế bằng đường dẫn ảnh mặc định cho BMW
+    "Toyota": "path_to_toyota_default_image", // Thay thế bằng đường dẫn ảnh mặc định cho Toyota
+    "Honda": "path_to_honda_default_image", // Thay thế bằng đường dẫn ảnh mặc định cho Honda
+    "Mercedes": "path_to_mercedes_default_image", // Thay thế bằng đường dẫn ảnh mặc định cho Mercedes
+    "Mazda": "path_to_mazda_default_image" // Thay thế bằng đường dẫn ảnh mặc định cho Mazda
+};
 
-    const itemsPerPage = 9;
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(cars.length / itemsPerPage);
-
-    // Tạo tham chiếu đến phần tử container để cuộn lên đầu
+export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
+    const [cars, setCars] = useState([]);
+    const [currentPage, setCurrentPage] = useState(10);
+    const [selectedCar, setSelectedCar] = useState(null); // Xe đã chọn để so sánh
+    const [carDetails, setCarDetails] = useState(null); // Thông tin chi tiết xe
     const containerRef = useRef(null);
 
-    const currentCars = cars.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const itemsPerPage = 9;
+
+    // Hàm lấy dữ liệu xe từ API
+
+    useEffect(() => {
+        const fetchCars = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8088/api/v1/car?page=${currentPage}&limit=${itemsPerPage}`);
+                const carsData = response.data.cars.map(car => ({
+
+                    ...car,
+                    image: car.image || defaultImages[car.brand] // Sử dụng ảnh mặc định nếu không có ảnh trong dữ liệu
+                }));
+                setCars(carsData);
+                // console.log('kiemtra', carsData);
+
+                carsData.forEach(car => {
+                    console.log('kiemtra', car.id); // Log từng id của mỗi xe
+                });
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu xe:", error);
+            }
+        };
+        fetchCars();
+    }, [currentPage]);
+    const fetchCarDetails = async (id) => {
+
+        console.log('Đang gọi API để lấy thông tin chi tiết xe với ID:', id);
+        try {
+            const response = await axios.get(`http://localhost:8088/api/v1/car/${id}`);
+
+            // Kiểm tra dữ liệu trả về từ API
+            console.log('Dữ liệu trả về từ API:', response.data.car);
+
+            // Kiểm tra xem dữ liệu có tồn tại hay không
+            if (response.data && response.data.car) {
+                setCarDetails({
+                    id: response.data.car.id,
+                    name: response.data.car.name,
+                    model: response.data.car.model,
+                    price: response.data.car.price,
+                    thumbnail: response.data.car.thumbnail || 'https://via.placeholder.com/150',
+                    specifications: response.data.specificationResponseDTOS.map((spec) => ({
+                        name: spec.name,
+                        attributes: spec.attributes.map((attr) => ({
+                            name: attr.name,
+                            value: attr.value,
+                        })),
+                    })),
+                });
+            } else {
+                console.error('Không có dữ liệu xe chi tiết');
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy thông tin chi tiết xe:", error);
+        }
+    };
+
+    const totalPages = Math.ceil(cars.length / itemsPerPage);
 
     const nextPage = () => {
         if (currentPage < totalPages) {
@@ -54,130 +97,51 @@ export const FeaturedCars = () => {
         }
     };
 
-    const FeaturedCar = ({ car }) => {
-        return (
-            <Box className="featured-car">
-                <div className="featured-car__box">
-                    <div className="featured-car__img">
-                        <img src={car.image} alt={car.title} />
-                    </div>
-                    <div className="featured-car__info">
-                        <p>{car.year} <span className="featured-car__mi-span">3100 mi</span> <span className="featured-car__hp-span">240HP</span> automatic</p>
-                    </div>
-                </div>
-                <div className="featured-car__txt">
-                    <h2><a href="#">{car.title}</a></h2>
-                    <h3>{car.prize}</h3>
-                    <p>{car.pretitle}</p>
-                </div>
-            </Box>
-        );
-    };
 
-    const handleequal = () => {
-
-    };
-
-    // Trạng thái cho Modal so sánh
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedCar, setSelectedCar] = useState(null); // Lưu thông tin xe được chọn
-
-    const handleOpenModal = (car) => {
-        setSelectedCar(car);
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedCar(null);
+    const handleCompareClick = (car) => {
+        console.log('car', car);
+        onAddCarToComparison(car); // Thêm xe vào bảng so sánh
+        scrollToServices(); // Cuộn đến phần Services
     };
 
     return (
         <section id="featured-cars" className="featured-cars" ref={containerRef}>
             <div className="featured-cars__container">
                 <div className="featured-cars__header">
-                    {/* <h2>Checkout <span>the</span> featured cars</h2>
-                    <p>featured cars</p> */}
                     <h2>Danh sách xe</h2>
-                    <Box className="filter-module" mt={0} sx={{ padding: '0 0' }}>
-                        <Box className="filter-module" mt={4} sx={{ padding: '0 100px' }}>
-                            {/* Bộ lọc hãng xe */}
-                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                                {/* <h3>Hãng xe</h3> */}
-                                <Box display="flex" flexWrap="wrap" gap={2}>
-                                    {["BMW", "Toyota", "Honda", "Mercedes", "Mazda"].map((brand, index) => (
-                                        <Button
-                                            key={index}
-                                            variant="outlined"
-                                            sx={{
-                                                textTransform: 'none',
-                                                borderRadius: '20px',
-                                                padding: '4px 12px',
-                                            }}
-                                            onClick={() => console.log(`Filter by brand: ${brand}`)}
-                                        >
-                                            {brand}
-                                        </Button>
-                                    ))}
-                                </Box>
-                            </Box>
-
-                            {/* Bộ lọc giá xe */}
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
-                                {/* <h3>Giá xe</h3> */}
-                                <Box display="flex" flexWrap="wrap" gap={2}>
-                                    {[
-                                        "Dưới 100 triệu",
-                                        "100 - 300 triệu",
-                                        "300 - 500 triệu",
-                                        "500 - 700 triệu",
-                                        "700 triệu - 1 tỷ",
-                                        "Trên 1 tỷ",
-                                    ].map((priceRange, index) => (
-                                        <Button
-                                            key={index}
-                                            variant="outlined"
-                                            sx={{
-                                                textTransform: 'none',
-                                                borderRadius: '20px',
-                                                padding: '4px 12px',
-                                            }}
-                                            onClick={() => console.log(`Filter by price: ${priceRange}`)}
-                                        >
-                                            {priceRange}
-                                        </Button>
-                                    ))}
-                                </Box>
-                            </Box>
-                        </Box>
-
-                    </Box>
                 </div>
                 <div className="featured-cars__content">
                     <Box sx={{ width: 1, padding: '0 100px' }}>
                         <Box className="featured-car__grid" display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
-                            {currentCars.map((car, index) => (
+                            {cars.map((car) => (
                                 <Box key={car.id} className="featured-car">
                                     <div className="featured-car__box">
-                                        <div className="featured-car__img">
-                                            <img src={car.image} alt={car.title} />
-                                        </div>
-                                        <div className="featured-car__info">
-                                            <p>{car.year} <span className="featured-car__mi-span">3100 mi</span> <span className="featured-car__hp-span">240HP</span> automatic</p>
-                                        </div>
+                                        <Link to={`/car/${car.id}`}>
+                                            <div className="featured-car__img">
+
+                                                <img src={car.image} alt={car.title} />
+                                            </div>
+                                            <div className="featured-car__info">
+                                                <h3>{car.price}</h3>
+                                                <p>{car.model}</p>
+                                                <p>{car.year_manufacture}</p>
+                                            </div>
+                                        </Link>
                                     </div>
                                     <div className="featured-car__txt">
                                         <h2>
-                                            <Link to={`/car/${car.id}`}>{car.title}</Link> {/* Điều hướng đến trang chi tiết */}
-                                            <button
-                                                type='button'
-                                                onClick={() => handleOpenModal(car)}
+                                            <Link to={`/car/${car.id}`}><h1>{car.name}</h1></Link> {/* Điều hướng đến trang chi tiết */}
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => {
+                                                    handleCompareClick(car);
+                                                }}
                                             >
-                                                + So Sánh
-                                            </button>
+                                                So Sánh
+                                            </Button>
                                         </h2>
-                                        <h3>{car.prize}</h3>
-                                        <p>{car.pretitle}</p>
+
                                     </div>
                                 </Box>
                             ))}
@@ -218,65 +182,6 @@ export const FeaturedCars = () => {
                     </Box>
                 </div>
             </div>
-
-            {/* Modal */}
-            <Modal
-                open={isModalOpen}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: '10px', // Đặt modal cách mép dưới màn hình 10px
-                        left: '50%',
-                        transform: 'translateX(-50%)', // Căn giữa theo chiều ngang
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: '8px',
-                    }}
-                >
-                    {selectedCar ? (
-                        <>
-                            <h2 id="modal-title">{selectedCar.title}</h2>
-                            <p id="modal-description">Giá: {selectedCar.prize}</p>
-                            <p>Năm sản xuất: {selectedCar.year}</p>
-                            <img src={selectedCar.image} alt={selectedCar.title} style={{ width: '100%' }} />
-                            <Button
-                                onClick={handleCloseModal}
-                                sx={{
-                                    mt: 2,
-                                    textTransform: 'none',
-                                    borderRadius: '20px',
-                                    backgroundColor: '#1976d2',
-                                    color: '#fff',
-                                }}
-                            >
-                                Đóng
-                            </Button>
-                            <Button
-                                onClick={handleCloseModal}
-                                sx={{
-                                    mt: 2,
-                                    textTransform: 'none',
-                                    borderRadius: '20px',
-                                    backgroundColor: '#1976d2',
-                                    color: '#fff',
-                                }}
-                            >
-                                Xác nhận so sánh
-                            </Button>
-                        </>
-                    ) : (
-                        <p>Không có thông tin xe.</p>
-                    )}
-                </Box>
-            </Modal>
-
         </section>
     );
 };
-

@@ -1,363 +1,266 @@
-
-// import React, { useState } from 'react';
-// import './Services.style.css';
-// import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-// import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-// import LocalCarWashIcon from '@mui/icons-material/LocalCarWash';
-// import CloseIcon from '@mui/icons-material/Close';
-// import Button from '@mui/material/Button';
-// import SvgIcon from '@mui/material/SvgIcon';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import TextField from '@mui/material/TextField';
-
-// export const Services = () => {
-//   const initialServices = [
-//     {
-//       name: 'Wuling Bingo 2024',
-//       img: 'https://storage.googleapis.com/a1aa/image/OeTyu1RHdpVlKCdUn5CfafoTI9xDxzclqIn9pN21J5LnQDunA.jpg',
-//       options: ['333 km - 399 triệu'],
-//       icon: DirectionsCarIcon,
-//     },
-//     {
-//       name: 'Audi A4 2021',
-//       img: 'https://storage.googleapis.com/a1aa/image/enf4XXV2z2vVJ0efSppMTxCqtye0R3Ubt1weXbLh6AUwFaw9E.jpg',
-//       options: ['40 TFSI Advanced - ...'],
-//       icon: LocalShippingIcon,
-//     },
-//     {
-//       name: 'Audi A7 2022',
-//       img: 'https://storage.googleapis.com/a1aa/image/VNiyw1B5l2JnGplTg9AlXVuIPsef0QSkGfJ3NocWp51sQDunA.jpg',
-//       options: ['55 TFSI quattro - 2 tỷ...'],
-//       icon: LocalCarWashIcon,
-//     },
-//     {
-//       name: 'Wuling Hongguang Mini EV 2023',
-//       img: 'https://storage.googleapis.com/a1aa/image/sT2RIksaCK46BtAEPoFvrqFkKreeSPwTuBYSjaYlrZVUoB3TA.jpg',
-//       options: ['undefined'],
-//       icon: DirectionsCarIcon,
-//     },
-//   ];
-
-//   const [services, setServices] = useState(initialServices);
-//   const [openModal, setOpenModal] = useState(false);
-//   const [newCar, setNewCar] = useState({ brand: '', name: '' });
-//   const [currentIndex, setCurrentIndex] = useState(null); // Track current index for modal
-
-//   const removeService = (index) => {
-//     const updatedServices = [...services];
-//     updatedServices[index] = null;
-//     setServices(updatedServices);
-//   };
-
-//   const restoreService = (index) => {
-//     setCurrentIndex(index); // Store the index of the placeholder
-//     setOpenModal(true);
-//   };
-
-//   const handleCloseModal = () => {
-//     setOpenModal(false);
-//     setCurrentIndex(null); // Clear the current index after closing modal
-//   };
-
-//   const handleAddCar = () => {
-//     if (currentIndex === null) return; // Ensure index is valid before proceeding
-
-//     const newService = {
-//       name: `${newCar.brand} ${newCar.name}`,
-//       img: 'https://via.placeholder.com/150',
-//       options: ['Chưa có thông tin'],
-//       icon: DirectionsCarIcon,
-//     };
-//     const updatedServices = [...services];
-//     updatedServices[currentIndex] = newService; // Use the stored index to update the correct service
-//     setServices(updatedServices);
-//     setOpenModal(false);
-//     setNewCar({ brand: '', name: '' });
-//   };
-
-//   const Service = ({ service, index }) => (
-//     <div className="single-service-item">
-//       <div className="service-image-container">
-//         <img src={service.img} alt={service.name} className="service-image" />
-// <button
-//   className="close-button"
-//   onClick={() => removeService(index)}
-// >
-//   <SvgIcon component={CloseIcon} />
-// </button>
-//       </div>
-//       <h3 className="service-name">{service.name}</h3>
-//       <div className="service-options">
-//         <select className="service-select">
-//           {service.options.map((option, idx) => (
-//             <option key={idx}>{option}</option>
-//           ))}
-//         </select>
-//       </div>
-//     </div>
-//   );
-
-//   const Placeholder = ({ index }) => (
-//     <div className="single-service-item placeholder">
-//       <Button
-//         variant="outlined"
-//         color="primary"
-//         onClick={() => restoreService(index)}
-//       >
-//         Thêm
-//       </Button>
-//     </div>
-//   );
-
-//   return (
-//     <section id="service" className="service-section">
-//       <div className="service-container">
-//         <div className="service-header">
-//           <h2 className="service-title">
-//             So Sánh Xe{' '}
-//             <span className="service-subtitle">
-//               (Bạn chỉ được phép chọn 4 xe cùng một lúc)
-//             </span>
-//           </h2>
-//           <Button
-//             variant="outlined"
-//             color="secondary"
-//             onClick={() => setServices(Array(4).fill(null))}
-//           >
-//             Xóa Tất Cả
-//           </Button>
-//         </div>
-//         <div className="service-content">
-//           {services.map((service, index) =>
-//             service ? (
-//               <Service service={service} index={index} key={index} />
-//             ) : (
-//               <Placeholder index={index} key={index} />
-//             )
-//           )}
-//         </div>
-//         <div className="service-footer">
-//           <Button variant="contained" color="primary">
-//             So Sánh
-//           </Button>
-//         </div>
-//       </div>
-
-//       {/* Modal for adding new car */}
-//       <Dialog open={openModal} onClose={handleCloseModal}>
-//         <DialogTitle>Thêm so sánh xe</DialogTitle>
-//         <DialogContent>
-//           <div className="modal-field">
-//             <label htmlFor="brand">Hãng xe:</label>
-//             <TextField
-//               id="brand"
-//               value={newCar.brand}
-//               onChange={(e) => setNewCar({ ...newCar, brand: e.target.value })}
-//               fullWidth
-//             />
-//           </div>
-//           <div className="modal-field">
-//             <label htmlFor="name">Tên xe:</label>
-//             <TextField
-//               id="name"
-//               value={newCar.name}
-//               onChange={(e) => setNewCar({ ...newCar, name: e.target.value })}
-//               fullWidth
-//             />
-//           </div>
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleCloseModal} color="secondary">
-//             Hủy
-//           </Button>
-//           <Button onClick={handleAddCar} color="primary">
-//             Thêm
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
-//     </section>
-//   );
-// };
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import './Services.style.css';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import LocalCarWashIcon from '@mui/icons-material/LocalCarWash';
-import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
-import SvgIcon from '@mui/material/SvgIcon';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
-export const Services = () => {
-  const initialServices = [
-    {
-      name: 'Wuling Bingo 2024',
-      img: 'https://storage.googleapis.com/a1aa/image/OeTyu1RHdpVlKCdUn5CfafoTI9xDxzclqIn9pN21J5LnQDunA.jpg',
-      options: ['333 km - 399 triệu'],
-      icon: DirectionsCarIcon,
-    },
-    {
-      name: 'Audi A4 2021',
-      img: 'https://storage.googleapis.com/a1aa/image/enf4XXV2z2vVJ0efSppMTxCqtye0R3Ubt1weXbLh6AUwFaw9E.jpg',
-      options: ['40 TFSI Advanced - ...'],
-      icon: LocalShippingIcon,
-    },
-    {
-      name: 'Audi A7 2022',
-      img: 'https://storage.googleapis.com/a1aa/image/VNiyw1B5l2JnGplTg9AlXVuIPsef0QSkGfJ3NocWp51sQDunA.jpg',
-      options: ['55 TFSI quattro - 2 tỷ...'],
-      icon: LocalCarWashIcon,
-    },
-    {
-      name: 'Wuling Hongguang Mini EV 2023',
-      img: 'https://storage.googleapis.com/a1aa/image/sT2RIksaCK46BtAEPoFvrqFkKreeSPwTuBYSjaYlrZVUoB3TA.jpg',
-      options: ['undefined'],
-      icon: DirectionsCarIcon,
-    },
-  ];
-
-  const [services, setServices] = useState(initialServices);
-  const [openModal, setOpenModal] = useState(false);
+const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
+  const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showComparison, setShowComparison] = useState(false);
-  const [newCar, setNewCar] = useState({ brand: '', name: '' });
-  const [currentIndex, setCurrentIndex] = useState(null); // Track current index for modal
+  const [showSearch, setShowSearch] = useState(false);
+  const [iselectedCars, setSelectedCars] = useState([]);
+  // Lưu trữ các xe đã chọn để so sánh
 
-  const removeService = (index) => {
-    const updatedServices = [...services];
-    updatedServices[index] = null;
-    setServices(updatedServices);
+  // Lấy danh sách tất cả các xe từ API
+  const fetchCarsList = async () => {
+    try {
+      let allCars = [];
+      let page = 1;
+      let hasNextPage = true;
+
+      while (hasNextPage) {
+        const response = await axios.get(`http://localhost:8088/api/v1/car?page=${page}&limit=1`); // Điều chỉnh số lượng xe lấy về mỗi trang
+        allCars = [...allCars, ...response.data.cars];
+
+        if (response.data.hasNextPage) {
+          page++;
+        } else {
+          hasNextPage = false;
+        }
+      }
+
+      return allCars;
+    } catch (error) {
+      setError('Lỗi khi lấy danh sách xe');
+      console.error('Lỗi khi lấy danh sách xe:', error);
+    }
   };
 
-  const restoreService = (index) => {
-    setCurrentIndex(index); // Store the index of the placeholder
-    setOpenModal(true);
+  // Lấy thông tin chi tiết của một xe
+  const fetchCarDetails = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:8088/api/v1/car/${id}`);
+      return {
+        id: response.data.car.id,
+        name: response.data.car.name,
+        model: response.data.car.model,
+        price: response.data.car.price,
+        thumbnail: response.data.car.thumbnail || 'https://via.placeholder.com/150',
+        specifications: response.data.specificationResponseDTOS.map((spec) => ({
+          name: spec.name,
+          attributes: spec.attributes.map((attr) => ({
+            name: attr.name,
+            value: attr.value,
+          })),
+        })),
+      };
+    } catch (error) {
+      setError('Lỗi khi lấy chi tiết xe');
+      console.error('Lỗi khi lấy chi tiết xe:', error);
+    }
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setCurrentIndex(null); // Clear the current index after closing modal
+  // Lấy thông tin chi tiết của tất cả các xe
+  const fetchAllCarDetails = async () => {
+    try {
+      const carsList = await fetchCarsList();
+      const carDetailsPromises = carsList.map((car) => fetchCarDetails(car.id));
+      const carDetails = await Promise.all(carDetailsPromises);
+
+      setServices(carDetails);
+      setFilteredServices(carDetails);
+    } catch (error) {
+      setError('Lỗi khi lấy dữ liệu chi tiết xe');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddCar = () => {
-    if (currentIndex === null) return; // Ensure index is valid before proceeding
+  // Lấy dữ liệu xe khi component được mount
+  useEffect(() => {
+    fetchAllCarDetails();
+  }, [selectedCars]); // Chạy một lần khi mount
 
-    const newService = {
-      name: `${newCar.brand} ${newCar.name}`,
-      img: 'https://via.placeholder.com/150',
-      options: ['Chưa có thông tin'],
-      icon: DirectionsCarIcon,
-    };
-    const updatedServices = [...services];
-    updatedServices[currentIndex] = newService; // Use the stored index to update the correct service
-    setServices(updatedServices);
-    setOpenModal(false);
-    setNewCar({ brand: '', name: '' });
+  // Xử lý chức năng tìm kiếm
+  const handleSearch = async (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    if (searchTerm.trim() === '') {
+      setFilteredServices([]); // Xóa kết quả tìm kiếm khi ô tìm kiếm trống
+      return;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:8088/api/v1/car/searchCar', {
+        params: {
+          keyword: searchTerm,
+          page: 1,
+          limit: 6,
+          sort: 'name',
+          direction: 'ASC',
+        }
+      });
+
+      if (response.data && response.data.content) {
+        const carDetailsPromises = response.data.content.map((car) => fetchCarDetails(car.id));
+        const carDetails = await Promise.all(carDetailsPromises);
+        setFilteredServices(carDetails);
+      } else {
+        setFilteredServices([]);
+      }
+    } catch (error) {
+      setError('Lỗi trong quá trình tìm kiếm');
+      console.error('Lỗi trong quá trình tìm kiếm:', error);
+    }
   };
 
+  // Thêm xe vào danh sách so sánh
+  const handleAddCarToComparison = (car) => {
+    if (iselectedCars.length < 4 && !iselectedCars.includes(car)) {
+      setSelectedCars([...iselectedCars, car]);
+    }
+  };
+
+  // Xóa xe khỏi danh sách so sánh
+  const handleRemoveCarFromComparison = (carId) => {
+    setSelectedCars(iselectedCars.filter((car) => car.id !== carId));
+  };
+
+  // Render bảng so sánh
   const renderComparisonTable = () => {
-    const validServices = services.filter((service) => service !== null);
+    if (iselectedCars.length === 0) {
+      return <div>Chưa có xe nào được chọn để so sánh</div>;
+    }
 
-    if (validServices.length === 0) return null;
+    const attributesMap = {};
+    iselectedCars.forEach((car) => {
+      car.specifications.forEach((spec) => {
+        spec.attributes.forEach((attr) => {
+          if (!attributesMap[attr.name]) {
+            attributesMap[attr.name] = {};
+          }
+          attributesMap[attr.name][car.id] = attr.value;
+        });
+      });
+    });
 
-    const keys = ['name', 'options']; // Các trường cần so sánh
-
+    const attributeNames = Object.keys(attributesMap);
     return (
-      <div className="comparison-table-container">
-        <h3>Bảng So Sánh</h3>
-        <table className="comparison-table">
-          <thead>
-            <tr>
-              <th>Thuộc tính</th>
-              {validServices.map((service, idx) => (
-                <th key={idx}>{service.name}</th>
+      <table className="comparison-table">
+        <thead>
+          <tr>
+            <th>Thuộc tính</th>
+            {iselectedCars.map((car) => (
+              <th key={car.id}>
+                {car.name}
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleRemoveCarFromComparison(car.id)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  Xóa
+                </Button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {attributeNames.map((attribute) => (
+            <tr key={attribute}>
+              <td>{attribute}</td>
+              {iselectedCars.map((car) => (
+                <td key={`${car.id}-${attribute}`}>
+                  {attributesMap[attribute][car.id] || 'Không có dữ liệu'}
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {keys.map((key) => (
-              <tr key={key}>
-                <td>{key === 'options' ? 'Tùy chọn' : 'Tên xe'}</td>
-                {validServices.map((service, idx) => (
-                  <td key={idx}>
-                    {key === 'options'
-                      ? service[key]?.join(', ') || ''
-                      : service[key] || ''}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     );
   };
 
-  const Service = ({ service, index }) => (
-    <div className="single-service-item">
-      <div className="service-image-container">
-        <img src={service.img} alt={service.name} className="service-image" />
-        <button className="close-button" onClick={() => removeService(index)}>
-          <SvgIcon component={CloseIcon} />
-        </button>
-      </div>
-      <h3 className="service-name">{service.name}</h3>
-      <div className="service-options">
-        <select className="service-select">
-          {service.options.map((option, idx) => (
-            <option key={idx}>{option}</option>
-          ))}
-        </select>
-      </div>
-    </div>
-  );
-
-  const Placeholder = ({ index }) => (
-    <div className="single-service-item placeholder">
-      <Button
-        variant="outlined"
-        color="primary"
-        onClick={() => restoreService(index)}
-      >
-        Thêm
-      </Button>
-    </div>
-  );
+  if (loading) return <div>Đang tải...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <section id="service" className="service-section">
+    <section id="service" className="service-section" ref={ref}>
       <div className="service-container">
         <div className="service-header">
-          <h2 className="service-title">
-            So Sánh Xe{' '}
-            <span className="service-subtitle">
-              (Bạn chỉ được phép chọn 4 xe cùng một lúc)
-            </span>
-          </h2>
+          <h2 className="service-title">So sánh xe</h2>
+        </div>
+        {showComparison && (
+          <div className="service-content">{renderComparisonTable()}</div>
+        )}
+        <div className="service-footer">
           <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => setServices(Array(4).fill(null))}
+            variant="contained"
+            color="primary"
+            onClick={() => setShowSearch(true)}
           >
-            Xóa Tất Cả
+            Thêm xe
           </Button>
         </div>
-        <div className="service-content">
-          {services.map((service, index) =>
-            service ? (
-              <Service service={service} index={index} key={index} />
-            ) : (
-              <Placeholder index={index} key={index} />
-            )
-          )}
+        {showSearch && <div className="overlay" onClick={() => setShowSearch(false)}></div>}
+        {showSearch && (
+          <div className="search-box">
+            <TextField
+              label="Tìm kiếm xe"
+              variant="outlined"
+              fullWidth
+              onChange={handleSearch}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setShowSearch(false)}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                if (filteredServices.length > 0) {
+                  handleAddCarToComparison(filteredServices[0]);
+                }
+                setShowSearch(false);
+              }}
+            >
+              Thêm
+            </Button>
+          </div>
+        )}
+        <div className="service-content" ref={ref}>
+          {filteredServices.map((service, index) => (
+            <div className="single-service-item" key={index} >
+              <div className="service-image-container">
+                <img
+                  src={service.thumbnail}
+                  alt={service.name}
+                  className="service-image"
+                />
+              </div>
+              <h3 className="service-name">{service.name}</h3>
+              <p>Giá: {service.price}</p>
+              <Button onClick={() => onRemoveCar(service.id)}>Xóa khỏi so sánh</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAddCarToComparison(service)}
+                disabled={iselectedCars.length >= 4 || iselectedCars.includes(service)}
+              >
+                {iselectedCars.includes(service) ? 'Đã chọn' : 'Thêm vào so sánh'}
+              </Button>
+            </div>
+          ))}
         </div>
         <div className="service-footer">
           <Button
@@ -365,44 +268,28 @@ export const Services = () => {
             color="primary"
             onClick={() => setShowComparison(true)}
           >
-            So Sánh
+            So sánh
           </Button>
         </div>
-        {showComparison && renderComparisonTable()}
       </div>
 
-      {/* Modal for adding new car */}
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>Thêm so sánh xe</DialogTitle>
-        <DialogContent>
-          <div className="modal-field">
-            <label htmlFor="brand">Hãng xe:</label>
-            <TextField
-              id="brand"
-              value={newCar.brand}
-              onChange={(e) => setNewCar({ ...newCar, brand: e.target.value })}
-              fullWidth
-            />
-          </div>
-          <div className="modal-field">
-            <label htmlFor="name">Tên xe:</label>
-            <TextField
-              id="name"
-              value={newCar.name}
-              onChange={(e) => setNewCar({ ...newCar, name: e.target.value })}
-              fullWidth
-            />
-          </div>
-        </DialogContent>
+      {/* Dialog so sánh */}
+      <Dialog
+        open={showComparison}
+        onClose={() => setShowComparison(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>So sánh xe</DialogTitle>
+        <DialogContent>{renderComparisonTable()}</DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="secondary">
-            Hủy
-          </Button>
-          <Button onClick={handleAddCar} color="primary">
-            Thêm
+          <Button onClick={() => setShowComparison(false)} color="primary">
+            Đóng
           </Button>
         </DialogActions>
       </Dialog>
     </section>
   );
-};
+});
+
+export default Services;

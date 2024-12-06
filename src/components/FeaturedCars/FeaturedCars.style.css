@@ -128,3 +128,10 @@
 .filter-module .MuiButton-outlined:hover {
     background-color: #f0f0f0;
 }
+.featured-car__box {
+    cursor: pointer; /* Thay đổi con trỏ thành biểu tượng bàn tay khi di chuột vào phần tử này */
+}
+
+.featured-car__txt h2 {
+    cursor: pointer; /* Đảm bảo rằng tiêu đề xe cũng thay đổi con trỏ */
+}

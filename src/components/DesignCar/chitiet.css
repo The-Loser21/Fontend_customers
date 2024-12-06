@@ -1,149 +1,107 @@
-/* Đảm bảo toàn bộ body của trang có margin 0 và padding 0 */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-}
-
-/* Đặt container chính cho phần car detail */
+/* Cải thiện bố cục của trang chi tiết xe */
 .car-detail-container {
   display: flex;
-  justify-content: center;
-  /* Căn giữa theo chiều ngang */
-  align-items: center;
-  /* Căn giữa theo chiều dọc */
-  height: 100vh;
-  /* Đảm bảo container chiếm toàn bộ chiều cao của màn hình */
-  padding: 20px;
-  background-color: #f7f7f7;
-  /* Màu nền nhẹ */
+  flex-direction: column;
+
+  padding: 40px;
+  margin-top: 10px; /* Giảm khoảng cách từ hero */
+  max-width: 500px; /* Giới hạn chiều rộng */
+  margin-left: 10px;
+  margin-right: auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ 
 }
 
-/* Header với chiều cao 300px */
-header {
-  /* height: 300px; */
-  background-color: #333;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
+/* Tiêu đề */
+.car-detail-container h1 {
+  font-size: 2.5rem;
   font-weight: bold;
-}
-
-/* Định dạng cho phần thông tin chi tiết xe */
-.car-detail-content {
-  background-color: white;
-  border-radius: 10px;
-  padding: 30px;
-  width: 100%;
-  max-width: 600px;
-  /* Giảm độ rộng content */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  /* Tạo bóng mờ nhẹ cho content */
-  text-align: left;
-  /* Căn trái nội dung */
-  margin-top: 20px;
-  /* Cách phần header một chút */
-}
-
-/* Tiêu đề phần chi tiết xe */
-.car-detail-content h1 {
-  font-size: 1.8rem;
-  /* Giảm kích thước font */
+  margin-bottom: 20px;
   color: #333;
-  margin-bottom: 20px;
+  text-transform: capitalize;
 }
 
-/* Định dạng ảnh */
-.car-detail-content img {
+/* Cải thiện ảnh xe */
+.car-detail-container img {
   width: 100%;
-  /* Giữ nguyên tỷ lệ ảnh */
-  max-width: 500px;
-  /* Giới hạn kích thước ảnh */
+  max-width: 700px;
   height: auto;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 20px;
+  object-fit: cover; /* Giúp ảnh không bị méo */
 }
 
-/* Định dạng các đoạn văn bản trong phần chi tiết */
-.car-detail-content p {
-  font-size: 1rem;
-  color: #666;
-  margin: 10px 0;
-}
-
-/* Định dạng cho giá */
-.car-detail-content .price {
+/* Thông tin chi tiết xe */
+.car-detail-container p {
   font-size: 1.2rem;
-  color: #e74c3c;
-  /* Màu đỏ cho giá */
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Nút xem chi tiết */
+.car-detail-container .MuiButton-root {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-transform: uppercase;
   font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s;
 }
 
-/* Định dạng cho năm */
-.car-detail-content .year {
-  font-size: 1.1rem;
-  color: #3498db;
-  /* Màu xanh dương cho năm */
+.car-detail-container .MuiButton-root:hover {
+  background-color: #0056b3;
 }
 
-/* Định dạng chung cho các nút */
-.car-detail-content button {
-  padding: 12px 24px;
-  /* Thêm không gian trong nút */
+/* Cải thiện Footer */
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  padding: 20px 0;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+}
+
+/* Đảm bảo hero không bị che mất */
+.hero {
+  margin-top: 0;
+  width: 100%;
+  height: auto;
+}
+
+/* Tạo khoảng cách hợp lý */
+.car-detail-container > p {
+  margin-top: 0;
+}
+
+/* Chỉnh sửa bố cục của Button */
+.car-detail-container button {
+  margin-top: 20px;
+}.car-detail-sidebar {
+  flex: 0.4; /* Cột bên phải chiếm 40% chiều rộng */
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top:100px
+}
+
+/* Nội dung trong cột bên phải */
+.car-detail-sidebar h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.car-detail-sidebar p {
   font-size: 1rem;
-  /* Kích thước chữ */
-  border: none;
-  /* Xóa viền mặc định */
-  border-radius: 5px;
-  /* Bo góc cho nút */
-  cursor: pointer;
-  /* Đổi con trỏ khi hover */
-  font-weight: bold;
-  /* Làm cho chữ đậm */
-  transition: background-color 0.3s, transform 0.3s;
-  /* Hiệu ứng khi hover */
-  margin: 10px;
-  /* Khoảng cách giữa các nút */
-}
-
-/* Màu nền cho nút Chi tiết */
-.car-detail-content button:nth-child(1) {
-  background-color: #3498db;
-  /* Màu xanh dương */
-  color: white;
-  /* Chữ màu trắng */
-}
-
-/* Màu nền cho nút So Sánh */
-.car-detail-content button:nth-child(2) {
-  background-color: #e74c3c;
-  /* Màu đỏ */
-  color: white;
-  /* Chữ màu trắng */
-}
-
-/* Hiệu ứng hover cho nút */
-.car-detail-content button:hover {
-  background-color: #2980b9;
-  /* Đổi màu khi hover (nút Chi tiết) */
-  transform: translateY(-3px);
-  /* Tạo hiệu ứng nâng lên */
-}
-
-/* Hiệu ứng hover cho nút So Sánh */
-.car-detail-content button:nth-child(2):hover {
-  background-color: #c0392b;
-  /* Đổi màu khi hover (nút So Sánh) */
-  transform: translateY(-3px);
-  /* Tạo hiệu ứng nâng lên */
-}
-
-/* Hiệu ứng focus (khi người dùng click vào nút) */
-.car-detail-content button:focus {
-  outline: none;
-  /* Xóa outline mặc định */
-  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
-  /* Tạo hiệu ứng sáng xung quanh nút */
+  color: #777;
+  margin-bottom: 10px;
 }

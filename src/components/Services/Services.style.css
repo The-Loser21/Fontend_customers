@@ -1,61 +1,4 @@
-/* .service{
-    padding: 160px 0 87px;
-    
-}
 
-.service__content{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    @media (min-width: 768px) {
-        flex-direction: row;
-    }
-
-}
-
-.single-service-item{
-    margin: 30px;
-    text-align: center;
-    padding:55px 30px 60px;
-    border-radius: 3px;
-    margin-bottom: 30px;
-    border: 1px solid #dadfe9;
-    -webkit-transition: .3s linear; 
-    -moz-transition:.3s linear; 
-    -ms-transition:.3s linear; 
-    -o-transition:.3s linear;
-    transition: .3s linear;
-}
-
-.single-service-icon {
-    display: inline-block;
-    color: #50616c;
-    font-size: 22px;
-}
-.single-service-item h2 a {
-    font-size:20px;
-    margin: 35px 0 20px;
-}
-
-.service__title h2{
-    text-align: center;
-    font-size: 32px;
-    color: #000000;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 25px;
-}
-.single-service-item:hover .single-service-icon{
-    color: #fff;
-}
-
-.single-service-item:hover h2 a,.single-service-item:hover p{color: #fff;}
-.single-service-item:hover  p:before {background: #fff;}
-.single-service-item:hover{box-shadow: 0 12px 30px 0px rgba(0,1,193,.2);background: #4e4ffa;border: 1px solid #4e4ffa;} */
-
-/* Container styles */
 .service-section {
     margin-top: 100px;
     background-color: #f3f4f6;
@@ -187,6 +130,8 @@
 }
 
 /* css so sánh */
+
+/* Modal styling */
 .comparison-table {
     width: 100%;
     border-collapse: collapse;
@@ -204,3 +149,65 @@
     background-color: #f4f4f4;
     font-weight: bold;
 }
+
+/* Styling for modal */
+.MuiDialog-root {
+  z-index: 9999; /* Đảm bảo modal hiển thị phía trên các phần tử khác */
+}
+
+.MuiDialogContent-root {
+  padding: 16px; /* Thêm khoảng cách padding */
+  overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+}
+
+.MuiDialogTitle-root {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.MuiDialogActions-root {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.service-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+/* CSS để tạo hộp tìm kiếm nổi trên màn hình */
+.search-box {
+    position: fixed;
+    top: 50%; /* Cách từ đỉnh màn hình 20px */
+    right: 50%; /* Cách từ phải màn hình 20px */
+    z-index: 1000; /* Đảm bảo hộp tìm kiếm luôn ở trên cùng */
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    /* background-color: 0 4px 8px rgba(0, 0, 0, 0.2);; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    width: 300px;
+    height: 160px; /* Chiều rộng của hộp tìm kiếm */
+  }
+  
+  .search-box input {
+    width: 100%;
+    padding: 8px;
+    height: 100px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    z-index: 999; /* Đảm bảo lớp phủ ở trên cùng */
+  }
+  
+  

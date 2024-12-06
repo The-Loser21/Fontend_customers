@@ -15,7 +15,7 @@ export const Hero = () => {
                     <div class="hero__txt">
                         <h2 style={{ color: theme }}>Chào Mừng Đến Với Haui-Car</h2>
                         <p style={{ color: theme }}>
-                            Welcom to HAUI-Car.
+                            -
                         </p>
                         {/* <button style={{ background: theme }} class="hero__btn" onclick="window.location.href='#'">Contact us</button> */}
                     </div>

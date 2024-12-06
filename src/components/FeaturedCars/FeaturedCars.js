@@ -18,7 +18,8 @@ const defaultImages = {
 
 export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
     const [cars, setCars] = useState([]);
-    const [currentPage, setCurrentPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(0); // Trang bắt đầu là 1
+    const [totalPages, setTotalPages] = useState(0);  // Tổng số trang
     const [selectedCar, setSelectedCar] = useState(null); // Xe đã chọn để so sánh
     const [carDetails, setCarDetails] = useState(null); // Thông tin chi tiết xe
     const containerRef = useRef(null);
@@ -31,23 +32,31 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
         const fetchCars = async () => {
             try {
                 const response = await axios.get(`http://localhost:8088/api/v1/car?page=${currentPage}&limit=${itemsPerPage}`);
-                const carsData = response.data.cars.map(car => ({
-
-                    ...car,
-                    image: car.image || defaultImages[car.brand] // Sử dụng ảnh mặc định nếu không có ảnh trong dữ liệu
-                }));
+                const carsData = await Promise.all(
+                    response.data.cars.map(async (car) => {
+                        try {
+                            // Gọi API để lấy ảnh thumbnail
+                            const imageResponse = await axios.get(`http://localhost:8088/api/v1/car/images/${car.thumbnail}`, {
+                                responseType: 'blob', // Định dạng Blob để sử dụng cho ảnh
+                            });
+                            const imageUrl = URL.createObjectURL(imageResponse.data); // Tạo URL Blob
+                            return { ...car, image: imageUrl };
+                        } catch (error) {
+                            console.error(`Lỗi khi lấy ảnh xe với ID ${car.id}:`, error);
+                            return { ...car, image: defaultImages[car.brand] }; // Fallback ảnh mặc định
+                        }
+                    })
+                );
                 setCars(carsData);
-                // console.log('kiemtra', carsData);
-
-                carsData.forEach(car => {
-                    console.log('kiemtra', car.id); // Log từng id của mỗi xe
-                });
+                console.log('Dữ liệu page:', response.data.totalPage);
+                setTotalPages(response.data.totalPage);
             } catch (error) {
                 console.error("Lỗi khi lấy dữ liệu xe:", error);
             }
         };
         fetchCars();
     }, [currentPage]);
+    
     const fetchCarDetails = async (id) => {
 
         console.log('Đang gọi API để lấy thông tin chi tiết xe với ID:', id);
@@ -81,19 +90,19 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
         }
     };
 
-    const totalPages = Math.ceil(cars.length / itemsPerPage);
+
 
     const nextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-            containerRef.current.scrollIntoView({ behavior: 'smooth' }); // Cuộn lên đầu
+        if (currentPage + 1 < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+            containerRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
-
+    
     const prevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-            containerRef.current.scrollIntoView({ behavior: 'smooth' }); // Cuộn lên đầu
+        if (currentPage > 0) {
+            setCurrentPage((prevPage) => prevPage - 1);
+            containerRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
@@ -119,7 +128,7 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
                                         <Link to={`/car/${car.id}`}>
                                             <div className="featured-car__img">
 
-                                                <img src={car.image} alt={car.title} />
+                                                <img src={car.image} alt={car.title || "Car Thumbnail"} />
                                             </div>
                                             <div className="featured-car__info">
                                                 <h3>{car.price}</h3>
@@ -156,7 +165,7 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
                     >
                         <Button
                             onClick={prevPage}
-                            disabled={currentPage === 1}
+                            disabled={currentPage === 0}
                             sx={{
                                 border: '1px solid #ccc',
                                 borderRadius: '4px',
@@ -166,10 +175,10 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
                         >
                             Previous
                         </Button>
-                        <span style={{ margin: '0 16px' }}>Page {currentPage} of {totalPages}</span>
+                        <span style={{ margin: '0 16px' }}>Page {currentPage + 1} of {totalPages}</span>
                         <Button
                             onClick={nextPage}
-                            disabled={currentPage === totalPages}
+                            disabled={currentPage + 1 === totalPages}
                             sx={{
                                 border: '1px solid #ccc',
                                 borderRadius: '4px',

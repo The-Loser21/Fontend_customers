@@ -14,6 +14,7 @@ export const CarDetail = () => {
     const [loading, setLoading] = useState(true); // Trạng thái loading
     const [error, setError] = useState(null); // Trạng thái lỗi
     const [open, setOpen] = useState(false); // Trạng thái mở modal
+    const [thumbnailUrl, setThumbnailUrl] = useState(null); // Lưu URL ảnh thumbnail
 
     // API URL với ID của xe
     const API_URL = `http://localhost:8088/api/v1/car/`;
@@ -31,11 +32,30 @@ export const CarDetail = () => {
                     },
                 });
                 setCar(response.data); // Lưu dữ liệu xe
+                fetchCarThumbnail(response.data.car.thumbnail); // Lấy ảnh thumbnail
             } catch (err) {
                 console.error('Error fetching car details:', err.message); // In lỗi ra console
                 setError(err.response?.data?.message || 'Failed to fetch car details');
             } finally {
                 setLoading(false); // Đặt trạng thái loading là false
+            }
+        };
+        const fetchCarThumbnail = async (thumbnail) => {
+            if (!thumbnail) return; // Nếu không có thumbnail thì không làm gì cả
+            try {
+                const imageResponse = await axios.get(
+                    `http://localhost:8088/api/v1/car/images/${thumbnail}`,
+                    {
+                        responseType: 'blob', // Nhận dữ liệu dưới dạng file nhị phân
+                        headers: {
+                            Authorization: `Bearer ${FIXED_TOKEN}`,
+                        },
+                    }
+                );
+                const imageUrl = URL.createObjectURL(imageResponse.data);
+                setThumbnailUrl(imageUrl); // Lưu URL ảnh tạm thời
+            } catch (err) {
+                console.error('Error fetching car thumbnail:', err.message);
             }
         };
         fetchCarDetails();
@@ -69,7 +89,12 @@ export const CarDetail = () => {
             {/* Phần thông tin chính */}
             <div className="car-detail-container">
                 <h1>{car.car.name}</h1>
-                <img src={car.car.image || fc2} alt={car.car.title} />
+               {/* Thẻ img mới để hiển thị ảnh từ API */}
+               {thumbnailUrl ? (
+                    <img src={thumbnailUrl} alt="Car Thumbnail" className="car-thumbnail" />
+                ) : (
+                    <p>Ảnh xe chưa khả dụng</p>
+                )}
                 <p><strong>Year:</strong> {car.car.year_manufacture}</p>
                 <p><strong>Model:</strong> {car.car.model}</p>
 

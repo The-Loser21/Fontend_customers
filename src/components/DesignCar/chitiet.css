@@ -105,3 +105,17 @@
   color: #777;
   margin-bottom: 10px;
 }
+.car-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.car-detail-table th, .car-detail-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.car-detail-table th {
+  background-color: #f4f4f4;
+  text-align: left;
+}

@@ -18,7 +18,6 @@ export const CarDetail = () => {
     // API URL với ID của xe
     const API_URL = `http://localhost:8088/api/v1/car/`;
 
-    // Token cố định để thử nghiệm
     const FIXED_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
 
     // Lấy thông tin chi tiết của xe từ API
@@ -58,7 +57,6 @@ export const CarDetail = () => {
             <Header />
             <Hero />
 
-            {/* Phần sidebar */}
             <div className="car-detail-sidebar">
                 <h2>Thông tin cơ bản</h2>
                 <span>Đây là một mẫu xe mới. Nhấn nút "Xem chi tiết" để xem đầy đủ thông tin!</span>
@@ -66,7 +64,6 @@ export const CarDetail = () => {
                 <p><strong>Location:</strong> {car.location || 'Unknown'}</p>
             </div>
 
-            {/* Phần thông tin chính */}
             <div className="car-detail-container">
                 <h1>{car.car.name}</h1>
                 <img src={car.car.image || fc2} alt={car.car.title} />

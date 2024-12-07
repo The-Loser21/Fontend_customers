@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-// Đảm bảo bạn đã cài các phần mở rộng của Chart.js mà bạn cần
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const TopCarChart = () => {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
 
-  // Token cố định cho ví dụ (thay bằng token thực tế của bạn)
   const token =    'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
 
 
@@ -30,10 +28,8 @@ const TopCarChart = () => {
 
         const data = await response.json();
 
-        // Kiểm tra dữ liệu trả về
         console.log('Dữ liệu trả về từ API:', data);
 
-        // Giả sử API trả về danh sách các xe với `name` và `views`
         const labels = data.map(car => car.name); // Tên xe
         const views = data.map(car => car.views); // Lượt xem của xe
 
@@ -59,8 +55,8 @@ const TopCarChart = () => {
       }
     };
 
-    fetchData(); // Gọi API khi component mount
-  }, []); // Chạy 1 lần khi component mount
+    fetchData();
+  }, []); 
 
   if (error) {
     return <p>Error: {error}</p>;

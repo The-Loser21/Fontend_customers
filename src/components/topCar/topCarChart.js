@@ -8,8 +8,7 @@ const TopCarChart = () => {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
 
-  const token =    'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
-
+  const token = 'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,14 +27,10 @@ const TopCarChart = () => {
 
         const data = await response.json();
 
-        console.log('Dữ liệu trả về từ API:', data);
-
-        const labels = data.map(car => car.name); // Tên xe
-        const views = data.map(car => car.views); // Lượt xem của xe
-
-        // Kiểm tra labels và views
-        console.log('Labels:', labels);
-        console.log('Views:', views);
+        // Lấy danh sách tên xe, lượt xem, và hình ảnh từ dữ liệu trả về
+        const labels = data.map(item => item.car.name); // Tên xe
+        const views = data.map(item => item.viewCount); // Lượt xem của xe
+        const images = data.map(item => item.car.thumbnail); // Link ảnh của xe (thumbnail)
 
         // Cập nhật dữ liệu cho biểu đồ
         setChartData({
@@ -49,14 +44,15 @@ const TopCarChart = () => {
               borderWidth: 1,
             },
           ],
+          images: images, // Thêm danh sách hình ảnh vào chartData
         });
       } catch (err) {
-        setError(err.message); // Ghi nhận lỗi nếu có
+        setError(err.message);
       }
     };
 
     fetchData();
-  }, []); 
+  }, []);
 
   if (error) {
     return <p>Error: {error}</p>;
@@ -66,24 +62,45 @@ const TopCarChart = () => {
     return <p>Đang tải biểu đồ...</p>;
   }
 
-  console.log('chartData:', chartData); // Kiểm tra chartData trước khi render
+  // Plugin tùy chỉnh để thêm hình ảnh vào bên cạnh các thanh
+  const imagePlugin = {
+    id: 'imagePlugin',
+    afterDraw(chart) {
+      const { ctx, chartArea: { left, top }, scales: { y } } = chart;
+
+      chartData.images.forEach((imageSrc, index) => {
+        const image = new Image();
+        image.src = imageSrc;
+        const yPosition = y.getPixelForValue(index); // Lấy vị trí y của từng nhãn
+
+        ctx.drawImage(image, left - 50, yPosition - 15, 30, 30); // Vẽ ảnh bên cạnh thanh
+      });
+    },
+  };
 
   return (
-    <div style={{ width: '80%', margin: '0 auto', padding: '20px' }}>
+    <div id="topCar" style={{ width: '80%', margin: '0 auto', padding: '20px' }}>
       <Bar
         data={chartData}
         options={{
           responsive: true,
+          indexAxis: 'y', // Hiển thị biểu đồ ngang
           plugins: {
             legend: {
               position: 'top',
             },
             title: {
               display: true,
-              text: 'Top 5 Xe Có Lượt Xem Nhiều Nhất',
+              text: '16 Xe Có Lượt Xem Nhiều Nhất',
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
             },
           },
         }}
+        plugins={[imagePlugin]} // Thêm plugin vào biểu đồ
       />
     </div>
   );

@@ -8,6 +8,7 @@ const TopCarChart = () => {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
 
+  // Token giả lập
   const token = 'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
 
   useEffect(() => {
@@ -27,12 +28,13 @@ const TopCarChart = () => {
 
         const data = await response.json();
 
-        // Lấy danh sách tên xe, lượt xem, và hình ảnh từ dữ liệu trả về
-        const labels = data.map(item => item.car.name); // Tên xe
-        const views = data.map(item => item.viewCount); // Lượt xem của xe
-        const images = data.map(item => item.car.thumbnail); // Link ảnh của xe (thumbnail)
+        // Gán dữ liệu biểu đồ từ API
+        const limitedData = data.slice(0, 5); // Lấy 5 xe đầu tiên
 
-        // Cập nhật dữ liệu cho biểu đồ
+        const labels = limitedData.map(item => item.car.name);
+        const views = limitedData.map(item => item.viewCount);
+        const images = limitedData.map(item => item.car.thumbnail);
+
         setChartData({
           labels: labels,
           datasets: [
@@ -44,7 +46,7 @@ const TopCarChart = () => {
               borderWidth: 1,
             },
           ],
-          images: images, // Thêm danh sách hình ảnh vào chartData
+          images: images, // Thêm hình ảnh vào chartData
         });
       } catch (err) {
         setError(err.message);
@@ -62,7 +64,7 @@ const TopCarChart = () => {
     return <p>Đang tải biểu đồ...</p>;
   }
 
-  // Plugin tùy chỉnh để thêm hình ảnh vào bên cạnh các thanh
+  // Plugin tuỳ chỉnh để hiển thị hình ảnh bên cạnh cột
   const imagePlugin = {
     id: 'imagePlugin',
     afterDraw(chart) {
@@ -71,9 +73,9 @@ const TopCarChart = () => {
       chartData.images.forEach((imageSrc, index) => {
         const image = new Image();
         image.src = imageSrc;
-        const yPosition = y.getPixelForValue(index); // Lấy vị trí y của từng nhãn
+        const yPosition = y.getPixelForValue(index); // Lấy vị trí y của từng cột
 
-        ctx.drawImage(image, left - 50, yPosition - 15, 30, 30); // Vẽ ảnh bên cạnh thanh
+        ctx.drawImage(image, left - 50, yPosition - 15, 30, 30); // Vẽ hình ảnh bên trái cột
       });
     },
   };
@@ -91,7 +93,7 @@ const TopCarChart = () => {
             },
             title: {
               display: true,
-              text: '16 Xe Có Lượt Xem Nhiều Nhất',
+              text: 'Top 5 Xe Có Lượt Xem Nhiều Nhất',
             },
           },
           scales: {
@@ -100,7 +102,7 @@ const TopCarChart = () => {
             },
           },
         }}
-        plugins={[imagePlugin]} // Thêm plugin vào biểu đồ
+        plugins={[imagePlugin]} // Thêm plugin hiển thị hình ảnh
       />
     </div>
   );

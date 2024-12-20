@@ -202,10 +202,13 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
         <div className="service-footer">
           <Button
             variant="contained"
-            color="primary"
-            onClick={() => setShowSearch(true)}
+            color="secondary"
+            onClick={() => {
+              setFilteredServices([]); // Xóa tất cả dữ liệu xe
+              setSelectedCars([]); // Xóa danh sách các xe đã chọn để so sánh
+            }}
           >
-            Thêm xe
+            Xóa tất cả
           </Button>
         </div>
         {showSearch && <div className="overlay" onClick={() => setShowSearch(false)}></div>}
@@ -238,30 +241,45 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
             </Button>
           </div>
         )}
-        <div className="service-content" ref={ref}>
-          {filteredServices.map((service, index) => (
-            <div className="single-service-item" key={index} >
-              <div className="service-image-container">
-                <img
-                  src={service.thumbnail}
-                  alt={service.name}
-                  className="service-image"
-                />
+        <div className="service-content">
+          {[...Array(4)].map((_, index) => {
+            const service = filteredServices[index];
+            return (
+              <div className="single-service-item" key={index}>
+                {service ? (
+                  <>
+                    <div className="service-image-container">
+                      <img
+                        src={service.thumbnail}
+                        alt={service.name}
+                        className="service-image"
+                      />
+                    </div>
+                    <h3 className="service-name">{service.name}</h3>
+                    <Button onClick={() => onRemoveCar(service.id)}>Xóa khỏi so sánh</Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleAddCarToComparison(service)}
+                      disabled={iselectedCars.length >= 4 || iselectedCars.includes(service)}
+                    >
+                      {iselectedCars.includes(service) ? 'Đã chọn' : 'Thêm vào so sánh'}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setShowSearch(true)}
+                  >
+                    Thêm xe
+                  </Button>
+                )}
               </div>
-              <h3 className="service-name">{service.name}</h3>
-              <p>Giá: {service.price}</p>
-              <Button onClick={() => onRemoveCar(service.id)}>Xóa khỏi so sánh</Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleAddCarToComparison(service)}
-                disabled={iselectedCars.length >= 4 || iselectedCars.includes(service)}
-              >
-                {iselectedCars.includes(service) ? 'Đã chọn' : 'Thêm vào so sánh'}
-              </Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
         <div className="service-footer">
           <Button
             variant="contained"

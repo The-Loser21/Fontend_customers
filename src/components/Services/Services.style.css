@@ -1,4 +1,3 @@
-
 .service-section {
     margin-top: 100px;
     background-color: #f3f4f6;
@@ -152,46 +151,54 @@
 
 /* Styling for modal */
 .MuiDialog-root {
-  z-index: 9999; /* Đảm bảo modal hiển thị phía trên các phần tử khác */
+    z-index: 9999;
+    /* Đảm bảo modal hiển thị phía trên các phần tử khác */
 }
 
 .MuiDialogContent-root {
-  padding: 16px; /* Thêm khoảng cách padding */
-  overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+    padding: 16px;
+    /* Thêm khoảng cách padding */
+    overflow-x: auto;
+    /* Cho phép cuộn ngang nếu bảng quá rộng */
 }
 
 .MuiDialogTitle-root {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 .MuiDialogActions-root {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .service-footer {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
 }
+
 /* CSS để tạo hộp tìm kiếm nổi trên màn hình */
 .search-box {
     position: fixed;
-    top: 50%; /* Cách từ đỉnh màn hình 20px */
-    right: 50%; /* Cách từ phải màn hình 20px */
-    z-index: 1000; /* Đảm bảo hộp tìm kiếm luôn ở trên cùng */
+    top: 50%;
+    /* Cách từ đỉnh màn hình 20px */
+    right: 50%;
+    /* Cách từ phải màn hình 20px */
+    z-index: 1000;
+    /* Đảm bảo hộp tìm kiếm luôn ở trên cùng */
     background-color: white;
     border-radius: 8px;
     padding: 10px;
     /* background-color: 0 4px 8px rgba(0, 0, 0, 0.2);; */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 300px;
-    height: 160px; /* Chiều rộng của hộp tìm kiếm */
-  }
-  
-  .search-box input {
+    height: 160px;
+    /* Chiều rộng của hộp tìm kiếm */
+}
+
+.search-box input {
     width: 100%;
     padding: 8px;
     height: 100px;
@@ -199,15 +206,16 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-  }
-  .overlay {
+}
+
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
-    z-index: 999; /* Đảm bảo lớp phủ ở trên cùng */
-  }
-  
-  
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Màu nền mờ */
+    z-index: 999;
+    /* Đảm bảo lớp phủ ở trên cùng */
+}

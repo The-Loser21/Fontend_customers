@@ -147,6 +147,7 @@
 .comparison-table th {
     background-color: #f4f4f4;
     font-weight: bold;
+    color: rgb(58, 78, 255);
 }
 
 /* Styling for modal */

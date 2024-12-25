@@ -1,169 +1,347 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Header } from '../Header/Header';
-import { Hero } from '../Hero/Hero';
-import { Footer } from '../Footer/Footer';
-import './chitiet.css';
 import axios from 'axios';
-import fc2 from '../assets/fc1.png';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import './chitiet.css';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import { Header } from '../Header/Header';
 
 export const CarDetail = () => {
-    const { id } = useParams(); // Lấy ID từ URL
-    const [car, setCar] = useState(null); // Lưu thông tin chi tiết xe
-    const [loading, setLoading] = useState(true); // Trạng thái loading
-    const [error, setError] = useState(null); // Trạng thái lỗi
-    const [open, setOpen] = useState(false); // Trạng thái mở modal
-    const [thumbnailUrl, setThumbnailUrl] = useState(null); // Lưu URL ảnh thumbnail
+    const { id } = useParams();
+    const [car, setCar] = useState(null);
+    const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+    const [filteredCars, setFilteredCars] = useState([]);
+    const [compareCars, setCompareCars] = useState([]);
+    const [comparisonData, setComparisonData] = useState({});
+    const [isDetailVisible, setIsDetailVisible] = useState(false);
 
-    // API URL với ID của xe
-    const API_URL = `http://localhost:8088/api/v1/car/`;
-
-    const FIXED_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6ImFiYzEyMyFAIyIsInN1YiI6ImFiYzEyMyFAIyIsImV4cCI6MTczNDM1ODY0M30.Xx4ovaVcacu_6sfePLCWjIvOIwOfkOmTSDtpW6tBUoc';
-
-    // Lấy thông tin chi tiết của xe từ API
     useEffect(() => {
         const fetchCarDetails = async () => {
             try {
-                const response = await axios.get(`${API_URL}${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${FIXED_TOKEN}`, // Thêm token vào header
-                    },
-                });
-                setCar(response.data); // Lưu dữ liệu xe
-                fetchCarThumbnail(response.data.car.thumbnail); // Lấy ảnh thumbnail
-            } catch (err) {
-                console.error('Error fetching car details:', err.message); // In lỗi ra console
-                setError(err.response?.data?.message || 'Failed to fetch car details');
-            } finally {
-                setLoading(false); // Đặt trạng thái loading là false
-            }
-        };
-        const fetchCarThumbnail = async (thumbnail) => {
-            if (!thumbnail) return; // Nếu không có thumbnail thì không làm gì cả
-            try {
-                const imageResponse = await axios.get(
-                    `http://localhost:8088/api/v1/car/images/${thumbnail}`,
-                    {
-                        responseType: 'blob', // Nhận dữ liệu dưới dạng file nhị phân
-                        headers: {
-                            Authorization: `Bearer ${FIXED_TOKEN}`,
-                        },
+                const response = await axios.get(`http://localhost:8088/api/v1/car/${id}`);
+                const carData = response.data.car;
+
+                // Lấy thông tin chi tiết xe
+                const carDetails = {
+                    id: carData.id,
+                    name: carData.name,
+                    model: carData.model,
+                    price: carData.price,
+                    thumbnail: carData.thumbnail || 'https://via.placeholder.com/150',
+                    specifications: response.data.specificationResponseDTOS?.map((spec) => ({
+                        name: spec.name,
+                        attributes: spec.attributes?.map((attr) => ({
+                            name: attr.name,
+                            value: attr.value,
+                        })) || [],
+                    })) || [],
+                };
+
+                // Lấy ảnh từ API nếu có thumbnail
+                if (carData.thumbnail) {
+                    try {
+                        const imageResponse = await axios.get(
+                            `http://localhost:8088/api/v1/car/images/${carData.thumbnail}`,
+                            { responseType: 'blob' }
+                        );
+                        const imageUrl = URL.createObjectURL(imageResponse.data);
+                        carDetails.thumbnail = imageUrl;
+                    } catch (imageError) {
+                        console.error('Error fetching car image:', imageError);
                     }
-                );
-                const imageUrl = URL.createObjectURL(imageResponse.data);
-                setThumbnailUrl(imageUrl); // Lưu URL ảnh tạm thời
-            } catch (err) {
-                console.error('Error fetching car thumbnail:', err.message);
+                }
+
+                setCar(carDetails);
+            } catch (error) {
+                console.error('Error fetching car details:', error);
             }
         };
         fetchCarDetails();
-    }, [id, API_URL]);
+    }, [id]);
 
-    if (loading) {
-        return <p>Loading car details...</p>;
-    }
 
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
+    const handleSearchChange = async (event) => {
+        const searchTerm = event.target.value.toLowerCase().trim();
+        if (!searchTerm) {
+            setFilteredCars([]);
+            return;
+        }
 
-    if (!car) {
-        return <p>Car not found</p>;
-    }
+        try {
+            const response = await axios.get('http://localhost:8088/api/v1/car/searchCar', {
+                params: {
+                    keyword: searchTerm,
+                    page: 0,
+                    limit: 10,
+                    sort: 'name',
+                    direction: 'ASC',
+                },
+            });
 
+            if (response.data && response.data.content && response.data.content.length > 0) {
+                setFilteredCars(response.data.content);
+            } else {
+                setFilteredCars([]);
+            }
+        } catch (error) {
+            console.error('Error searching cars:', error);
+        }
+    };
+
+    const handleAddToComparison = async (carToAdd) => {
+        if (car && !compareCars.some((existingCar) => existingCar.id === carToAdd.id)) {
+            try {
+                const response = await axios.get(`http://localhost:8088/api/v1/car/${carToAdd.id}`);
+                const carDetails = {
+                    id: response.data.car.id,
+                    name: response.data.car.name,
+                    model: response.data.car.model,
+                    price: response.data.car.price,
+                    specifications: response.data.specificationResponseDTOS?.map((spec) => ({
+                        name: spec.name,
+                        attributes: spec.attributes?.map((attr) => ({
+                            name: attr.name,
+                            value: attr.value,
+                        })) || [],
+                    })) || [],
+                };
+                setCompareCars((prevCars) => [...prevCars, carDetails]);
+            } catch (error) {
+                console.error('Error adding car to comparison:', error);
+            }
+        }
+    };
+
+    const handleRemoveFromComparison = (carId) => {
+        setCompareCars((prevCars) => prevCars.filter((car) => car.id !== carId));
+    };
+
+    const handleShowComparison = () => {
+        setComparisonData({
+            initialCar: car,
+            compareCars,
+        });
+        setIsCompareModalOpen(false);
+    };
+
+    const handleCloseModal = () => {
+        setIsCompareModalOpen(false);
+    };
+
+    const handleShowCarDetails = () => {
+        setIsDetailVisible(!isDetailVisible);
+    };
+
+    const toggleSpecification = (specName) => {
+        const updatedCar = { ...car };
+        updatedCar.specifications = updatedCar.specifications.map((spec) => {
+            if (spec.name === specName) {
+                spec.showAttributes = !spec.showAttributes;
+            }
+            return spec;
+        });
+        setCar(updatedCar);
+    };
     return (
-        <div>
+        <>
             <Header />
-            <Hero />
+            <div className="car-detail">
 
-            <div className="car-detail-sidebar">
-                <h2>Thông tin cơ bản</h2>
-                <span>Đây là một mẫu xe mới. Nhấn nút "Xem chi tiết" để xem đầy đủ thông tin!</span>
-                <p><strong>Price:</strong> {car.car.price}</p>
-                <p><strong>Location:</strong> {car.location || 'Unknown'}</p>
-            </div>
-
-            <div className="car-detail-container">
-                <h1>{car.car.name}</h1>
-               {/* Thẻ img mới để hiển thị ảnh từ API */}
-               {thumbnailUrl ? (
-                    <img src={thumbnailUrl} alt="Car Thumbnail" className="car-thumbnail" />
+                {car ? (
+                    <Box>
+                        <div className="car-detail__header">
+                            <h2>{car.name}</h2>
+                            <p>Model: {car.model}</p>
+                            <p>Price: {car.price}</p>
+                        </div>
+                        <div className="car-detail__image">
+                            <img src={car.thumbnail} alt={car.name} />
+                        </div>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Button variant="contained" onClick={() => setIsCompareModalOpen(true)}>
+                                Compare Cars
+                            </Button>
+                            <Button variant="outlined" onClick={handleShowCarDetails}>
+                                {isDetailVisible ? 'Hide Details' : 'View Details'}
+                            </Button>
+                        </Box>
+                    </Box>
                 ) : (
-                    <p>Ảnh xe chưa khả dụng</p>
+                    <p>Loading car details...</p>
                 )}
-                <p><strong>Year:</strong> {car.car.year_manufacture}</p>
-                <p><strong>Model:</strong> {car.car.model}</p>
 
-                {/* Nút mở modal */}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setOpen(true)}
-                >
-                    Xem chi tiết
-                </Button>
-
-                {/* Modal hiển thị thông tin */}
-                <Dialog
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    maxWidth="md"
-                    fullWidth
-                >
-                    <DialogTitle>Thông tin chi tiết xe</DialogTitle>
-                    <DialogContent>
-                        <table className="car-detail-table">
+                {isDetailVisible && car && (
+                    <Box sx={{ marginTop: 3 }}>
+                        <h3>Car Details</h3>
+                        <table className="car-detail__details">
                             <thead>
                                 <tr>
-                                    <th>Thông số</th>
-                                    <th>Giá trị</th>
+                                    <th>Specification</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Manufacturer</td>
-                                    <td>{car.manufacturer || 'N/A'}</td>
-                                </tr>
-                                <tr>
-                                    <td>Price</td>
-                                    <td>{car.car.price}</td>
-                                </tr>
-                                <tr>
-                                    <td>Year of Manufacture</td>
-                                    <td>{car.car.year_manufacture}</td>
-                                </tr>
-                                <tr>
-                                    <td>Model</td>
-                                    <td>{car.car.model}</td>
-                                </tr>
-                                {/* Thông số kỹ thuật */}
-                                {car.specificationResponseDTOS.map((spec) => (
-                                    <React.Fragment key={spec.id}>
+                                {car.specifications?.map((spec) => (
+                                    <React.Fragment key={spec.name}>
                                         <tr>
-                                            <td colSpan="2"><strong>{spec.name}</strong></td>
+                                            <td
+                                                className="specification-row"
+                                                onClick={() => toggleSpecification(spec.name)}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <span>{spec.name}</span>
+                                                <span>{spec.showAttributes ? '−' : '+'}</span>
+                                            </td>
+                                            <td></td>
                                         </tr>
-                                        {spec.attributes.map((attribute) => (
-                                            <tr key={attribute.id}>
-                                                <td>{attribute.name}</td>
-                                                <td>{attribute.value}</td>
+                                        {spec.showAttributes && spec.attributes.map((attr) => (
+                                            <tr key={`${spec.name}-${attr.name}`}>
+                                                <td style={{ paddingLeft: '40px', fontStyle: 'italic' }}>{attr.name}</td>
+                                                <td>{attr.value}</td>
                                             </tr>
                                         ))}
                                     </React.Fragment>
                                 ))}
                             </tbody>
-                        </table>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpen(false)} color="secondary">
-                            Đóng
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
 
-            <Footer />
-        </div>
+                        </table>
+                    </Box>
+                )}
+
+                {/* Compare Modal */}
+                <Modal open={isCompareModalOpen} onClose={handleCloseModal}>
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '60%',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        overflowY: 'auto',
+                        maxHeight: '90vh',
+                    }}>
+                        <h2>Compare Cars</h2>
+                        <TextField
+                            fullWidth
+                            label="Search cars"
+                            placeholder="Enter car name or model"
+                            onChange={handleSearchChange}
+                            sx={{ marginBottom: 2 }}
+                        />
+
+                        <Box>
+                            {filteredCars.map((filteredCar) => (
+                                <Box
+                                    key={filteredCar.id}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '8px',
+                                        borderBottom: '1px solid #ddd',
+                                    }}
+                                >
+                                    <span>{filteredCar.name} - {filteredCar.model}</span>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => handleAddToComparison(filteredCar)}
+                                    >
+                                        Add to Comparison
+                                    </Button>
+                                </Box>
+                            ))}
+                        </Box>
+
+                        <h3>Selected Cars for Comparison:</h3>
+                        {compareCars.length > 0 ? (
+                            compareCars.map((compareCar) => (
+                                <Box
+                                    key={compareCar.id}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '8px',
+                                        borderBottom: '1px solid #ddd',
+                                    }}
+                                >
+                                    <span>{compareCar.name} - {compareCar.model}</span>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => handleRemoveFromComparison(compareCar.id)}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
+                            ))
+                        ) : (
+                            <p>No cars selected for comparison.</p>
+                        )}
+
+                        <Box sx={{ marginTop: 2, textAlign: 'center' }}>
+                            <Button variant="contained" onClick={handleShowComparison}>
+                                Show Comparison Table
+                            </Button>
+                        </Box>
+                    </Box>
+                </Modal>
+
+                {comparisonData.initialCar && comparisonData.compareCars.length > 0 && (
+                    <Box sx={{ marginTop: 3 }}>
+                        <h3>Comparison Table</h3>
+                        <table className="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>{comparisonData.initialCar.name}</th>
+                                    {comparisonData.compareCars.map((compareCar) => (
+                                        <th key={compareCar.id}>{compareCar.name}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {comparisonData.initialCar.specifications?.flatMap((spec) =>
+                                    spec.attributes.map((attr) => (
+                                        <tr key={`${spec.name}-${attr.name}`}>
+                                            <td>{`${spec.name}: ${attr.name}`}</td>
+                                            <td>{attr.value}</td>
+                                            {comparisonData.compareCars.map((compareCar) => {
+                                                const compareSpec = compareCar.specifications.find(
+                                                    (s) => s.name === spec.name
+                                                );
+                                                const compareAttr = compareSpec?.attributes.find(
+                                                    (a) => a.name === attr.name
+                                                );
+                                                return <td key={`${compareCar.id}-${attr.name}`}>{compareAttr?.value || '-'}</td>;
+                                            })}
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => setComparisonData({})}
+                            sx={{ marginTop: 2 }}
+                        >
+                            Close Comparison Table
+                        </Button>
+                    </Box>
+
+                )}
+            </div>
+        </>
     );
 };
 

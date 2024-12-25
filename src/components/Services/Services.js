@@ -13,10 +13,10 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
   const [filteredServices, setFilteredServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showComparison, setShowComparison] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [iselectedCars, setSelectedCars] = useState([]);
-  // Lưu trữ các xe đã chọn để so sánh
+  const [showComparison, setShowComparison] = useState(false); // Hiển thị bảng so sánh
+  const [selectedIndex, setSelectedIndex] = useState(null); // Chỉ số của vị trí đang thêm xe
+  const [iselectedCars, setSelectedCars] = useState([null, null, null, null]); // Tối đa 4 xe, null cho các vị trí trống
 
   // Lấy danh sách tất cả các xe từ API
   const fetchCarsList = async () => {
@@ -26,7 +26,7 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
       let hasNextPage = true;
 
       while (hasNextPage) {
-        const response = await axios.get(`http://localhost:8088/api/v1/car?page=${page}&limit=1`); // Điều chỉnh số lượng xe lấy về mỗi trang
+        const response = await axios.get(`http://localhost:8088/api/v1/car?page=${page}&limit=1`);
         allCars = [...allCars, ...response.data.cars];
 
         if (response.data.hasNextPage) {
@@ -86,7 +86,7 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
   // Lấy dữ liệu xe khi component được mount
   useEffect(() => {
     fetchAllCarDetails();
-  }, [selectedCars]); // Chạy một lần khi mount
+  }, []);
 
   // Xử lý chức năng tìm kiếm
   const handleSearch = async (event) => {
@@ -120,34 +120,35 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
     }
   };
 
-  // Thêm xe vào danh sách so sánh
+  // Thêm xe vào danh sách so sánh tại vị trí cụ thể
   const handleAddCarToComparison = (car) => {
-    if (iselectedCars.length < 4 && !iselectedCars.includes(car)) {
-      setSelectedCars([...iselectedCars, car]);
-    }
+    const updatedCars = [...iselectedCars];
+    updatedCars[selectedIndex] = car;
+    setSelectedCars(updatedCars);
+    setShowSearch(false); // Đóng ô tìm kiếm
+    setSelectedIndex(null); // Reset chỉ số
   };
 
-  // Xóa xe khỏi danh sách so sánh
-  const handleRemoveCarFromComparison = (carId) => {
-    setSelectedCars(iselectedCars.filter((car) => car.id !== carId));
+  // Mở ô tìm kiếm cho vị trí cụ thể
+  const handleOpenSearch = (index) => {
+    setSelectedIndex(index);
+    setShowSearch(true);
   };
 
-  // Render bảng so sánh
+  // Hiển thị bảng so sánh
   const renderComparisonTable = () => {
-    if (iselectedCars.length === 0) {
-      return <div>Chưa có xe nào được chọn để so sánh</div>;
-    }
-
     const attributesMap = {};
     iselectedCars.forEach((car) => {
-      car.specifications.forEach((spec) => {
-        spec.attributes.forEach((attr) => {
-          if (!attributesMap[attr.name]) {
-            attributesMap[attr.name] = {};
-          }
-          attributesMap[attr.name][car.id] = attr.value;
+      if (car) {
+        car.specifications.forEach((spec) => {
+          spec.attributes.forEach((attr) => {
+            if (!attributesMap[attr.name]) {
+              attributesMap[attr.name] = {};
+            }
+            attributesMap[attr.name][car.id] = attr.value;
+          });
         });
-      });
+      }
     });
 
     const attributeNames = Object.keys(attributesMap);
@@ -156,18 +157,8 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
         <thead>
           <tr>
             <th>Thuộc tính</th>
-            {iselectedCars.map((car) => (
-              <th key={car.id}>
-                {car.name}
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleRemoveCarFromComparison(car.id)}
-                  style={{ marginLeft: '10px' }}
-                >
-                  Xóa
-                </Button>
-              </th>
+            {iselectedCars.map((car, idx) => (
+              <th key={idx}>{car ? car.name : ''}</th>
             ))}
           </tr>
         </thead>
@@ -175,9 +166,9 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
           {attributeNames.map((attribute) => (
             <tr key={attribute}>
               <td>{attribute}</td>
-              {iselectedCars.map((car) => (
-                <td key={`${car.id}-${attribute}`}>
-                  {attributesMap[attribute][car.id] || 'Không có dữ liệu'}
+              {iselectedCars.map((car, idx) => (
+                <td key={`${idx}-${attribute}`}>
+                  {car ? attributesMap[attribute][car.id] || 'Không có dữ liệu' : 'Trống'}
                 </td>
               ))}
             </tr>
@@ -187,125 +178,128 @@ const Services = forwardRef(({ selectedCars, onRemoveCar }, ref) => {
     );
   };
 
-  if (loading) return <div>Đang tải...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
     <section id="service" className="service-section" ref={ref}>
       <div className="service-container">
         <div className="service-header">
           <h2 className="service-title">So sánh xe</h2>
         </div>
-        {showComparison && (
-          <div className="service-content">{renderComparisonTable()}</div>
-        )}
+
+        {/* Hiển thị các ô xe */}
+        <div className="service-content">
+          {iselectedCars.map((car, index) => (
+            <div className="single-service-item" key={index}>
+              {car ? (
+                <>
+                  <div className="service-image-container">
+                    <img
+                      src={car.thumbnail}
+                      alt={car.name}
+                      className="service-image"
+                    />
+                  </div>
+                  <h3 className="service-name">{car.name}</h3>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => {
+                      const updatedCars = [...iselectedCars];
+                      updatedCars[index] = null; // Xóa xe khỏi vị trí
+                      setSelectedCars(updatedCars);
+                    }}
+                  >
+                    Xóa
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleOpenSearch(index)}
+                >
+                  Thêm xe
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Nút So sánh */}
         <div className="service-footer">
           <Button
             variant="contained"
-            color="secondary"
-            onClick={() => {
-              setFilteredServices([]); // Xóa tất cả dữ liệu xe
-              setSelectedCars([]); // Xóa danh sách các xe đã chọn để so sánh
-            }}
+            color="primary"
+            onClick={() => setShowComparison(true)}
+            disabled={iselectedCars.filter((car) => car).length < 2} // Chỉ cho phép nếu có ít nhất 2 xe
           >
-            Xóa tất cả
+            So sánh
           </Button>
         </div>
-        {showSearch && <div className="overlay" onClick={() => setShowSearch(false)}></div>}
-        {showSearch && (
-          <div className="search-box">
+
+        {/* Dialog bảng so sánh */}
+        <Dialog
+          open={showComparison}
+          onClose={() => setShowComparison(false)}
+          maxWidth="lg"
+          fullWidth
+        >
+          <DialogTitle>So sánh xe</DialogTitle>
+          <DialogContent>{renderComparisonTable()}</DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowComparison(false)} color="primary">
+              Đóng
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Dialog tìm kiếm */}
+        <Dialog
+          open={showSearch}
+          onClose={() => setShowSearch(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Tìm kiếm xe</DialogTitle>
+          <DialogContent>
             <TextField
               label="Tìm kiếm xe"
               variant="outlined"
               fullWidth
               onChange={handleSearch}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setShowSearch(false)}
-            >
-              Hủy
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                if (filteredServices.length > 0) {
-                  handleAddCarToComparison(filteredServices[0]);
-                }
-                setShowSearch(false);
-              }}
-            >
-              Thêm
-            </Button>
-          </div>
-        )}
-        <div className="service-content">
-          {[...Array(4)].map((_, index) => {
-            const service = filteredServices[index];
-            return (
-              <div className="single-service-item" key={index}>
-                {service ? (
-                  <>
-                    <div className="service-image-container">
-                      <img
-                        src={service.thumbnail}
-                        alt={service.name}
-                        className="service-image"
-                      />
-                    </div>
-                    <h3 className="service-name">{service.name}</h3>
-                    <Button onClick={() => onRemoveCar(service.id)}>Xóa khỏi so sánh</Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleAddCarToComparison(service)}
-                      disabled={iselectedCars.length >= 4 || iselectedCars.includes(service)}
-                    >
-                      {iselectedCars.includes(service) ? 'Đã chọn' : 'Thêm vào so sánh'}
-                    </Button>
-                  </>
-                ) : (
+            <div className="search-results">
+              {filteredServices.map((car) => (
+                <div
+                  key={car.id}
+                  style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}
+                >
+                  <img
+                    src={car.thumbnail}
+                    alt={car.name}
+                    style={{ width: '50px', height: '50px', marginRight: '10px', borderRadius: '5px' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div>{car.name}</div>
+                    <div style={{ color: '#888' }}>{car.model}</div>
+                  </div>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setShowSearch(true)}
+                    onClick={() => handleAddCarToComparison(car)}
                   >
-                    Thêm xe
+                    Thêm
                   </Button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="service-footer">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowComparison(true)}
-          >
-            So sánh
-          </Button>
-        </div>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowSearch(false)} color="primary">
+              Đóng
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-
-      {/* Dialog so sánh */}
-      <Dialog
-        open={showComparison}
-        onClose={() => setShowComparison(false)}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>So sánh xe</DialogTitle>
-        <DialogContent>{renderComparisonTable()}</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowComparison(false)} color="primary">
-            Đóng
-          </Button>
-        </DialogActions>
-      </Dialog>
     </section>
   );
 });

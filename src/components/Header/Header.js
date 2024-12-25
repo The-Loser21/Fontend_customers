@@ -17,13 +17,14 @@ import TextField from '@mui/material/TextField';
 import { useDispatch } from "react-redux";
 import { changeColor } from '../../store/slices/themeSlice';
 import { Link } from 'react-scroll';
+import { SearchCar } from '../SearchCar/SearchCar';
 
 const pageMappings = {
   home: "Trang chủ",
   cars: "Xe mới",
   "featured-cars": "Xe",
   service: "So sánh xe",
-  topCar: "Top Xe", 
+  topCar: "Top Xe",
   review: "Nhà phát triển",
 };
 
@@ -42,7 +43,7 @@ export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const appBarColor = scrollPosition > 1 ? '#000' : 'transparent';
+  const appBarColor = scrollPosition > 1 ? 'rgba(54, 69, 79, 0.9)' : 'transparent';
 
   useEffect(() => {
     dispatch(changeColor(storageColor));
@@ -143,7 +144,6 @@ export const Header = () => {
                 ))}
               </Menu>
             </Box>
-
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
               variant="h5"
@@ -181,6 +181,7 @@ export const Header = () => {
                 )
               ))}
             </Box>
+            <SearchCar />
 
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">

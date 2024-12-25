@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const TopCarChart = () => {
@@ -81,7 +82,7 @@ const TopCarChart = () => {
   };
 
   return (
-    <div id="topCar" style={{ width: '80%', margin: '0 auto', padding: '20px' }}>
+    <div id="topCar" style={{ width: '80%', margin: '50px auto', padding: '20px' }}>
       <Bar
         data={chartData}
         options={{
@@ -94,6 +95,11 @@ const TopCarChart = () => {
             title: {
               display: true,
               text: 'Top 5 Xe Có Lượt Xem Nhiều Nhất',
+              font: {
+                size: 30, // Kích thước font chữ
+                family: 'Arial, sans-serif', // Chọn font chữ
+                weight: 'bold', // Định dạng chữ đậm
+              },
             },
           },
           scales: {

@@ -1,13 +1,19 @@
 import React from 'react'
 import './Reviews.style.css';
-import c1 from '../assets/c1.png';
-import c2 from '../assets/c2.png';
-import c3 from '../assets/c3.png';
+import lan from '../assets/lan.png';
+import hoi from '../assets/hoi.png';
+import giang from '../assets/giang.png';
+import hai from '../assets/hai.png';
+
 
 export const Reviews = () => {
 
-  const reviews = [{ name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c1 },
-  { name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c2 }, { name: "largest dealership", review: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut den fugit sed quia. ", image: c3 }]
+  const reviews = [
+    { name: "Nhà phát triển website", review: "Chịu trách nhiệm kiểm thử, kiểm tra giao diện. Đảm bảo giao diện hoạt động bình thường", image: lan },
+    { name: "Nhà phát triển website", review: "Chịu trách nhiệm về phía Back-end của hệ thống. Xây dựng hệ thống xử lý hoàn chỉnh", image: hoi },
+    { name: "Nhà phát triển website", review: "Chịu trách nhiệm về phía Font-end, xử lý các API cho giao diện", image: giang },
+    { name: "Nhà phát triển website", review: "Chịu trách nhiệm về thiết kế. Thiết kế giao diện cho browser và dashbroad", image: hai }
+  ]
 
 
   const Review = ({ review }) => {

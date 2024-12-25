@@ -3,19 +3,19 @@ import './Footer.style.css'; // Importujemy plik CSS ze stylami
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 
 
 export const Footer = () => {
   const theme = useSelector((state) => state.theme.value)
 
   return (
-    <footer  className="footer"  style={{background: theme}}>
-         {/* Thêm biểu đồ vào trang chủ */}
+    <footer className="footer" style={{ background: theme }}>
+      {/* Thêm biểu đồ vào trang chủ */}
       <div className="footer-content">
         <div className="footer-info">
-          <p>Email: example@example.com</p>
-          <p>Address: 123 Example Street, City, Country</p>
+          <p>Email: Nguyenhoi2004@gmail.com</p>
+          <p>Address: Số 298 Đ. Cầu Diễn, Minh Khai, Bắc Từ Liêm, Hà Nội</p>
           <p>Phone: +1234567890</p>
         </div>
         <ul className="footer-links">

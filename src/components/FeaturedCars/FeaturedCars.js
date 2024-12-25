@@ -184,7 +184,7 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
                                                 <img src={car.image} alt={car.title || "Car Thumbnail"} />
                                             </div>
                                             <div className="featured-car__info">
-                                                <h3>{car.price}</h3>
+                                                {/* <h3>{car.price}</h3> */}
                                                 <p>{car.model}</p>
                                                 <p>{car.year_manufacture}</p>
                                             </div>
@@ -192,7 +192,10 @@ export const FeaturedCars = ({ onAddCarToComparison, scrollToServices }) => {
                                     </div>
                                     <div className="featured-car__txt">
                                         <h2>
-                                            <Link to={`/car/${car.id}`}><h1>{car.name}</h1></Link>
+                                            <Link to={`/car/${car.id}`}>
+                                                <h1>{car.name}</h1>
+                                                <h2>{car.price}</h2>
+                                            </Link>
                                             <Button variant="contained" color="primary" onClick={() => handleCompareClick(car)}>
                                                 So Sánh
                                             </Button>

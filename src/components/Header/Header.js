@@ -43,7 +43,7 @@ export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const appBarColor = scrollPosition > 1 ? 'rgba(54, 69, 79, 0.9)' : 'transparent';
+  const appBarColor = scrollPosition > 1 ? 'rgba(54, 69, 79, 0.9)' : 'rgba(54, 69, 79, 0.9)';
 
   useEffect(() => {
     dispatch(changeColor(storageColor));

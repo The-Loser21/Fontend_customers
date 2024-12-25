@@ -147,200 +147,203 @@ export const CarDetail = () => {
     return (
         <>
             <Header />
-            <div className="car-detail">
+            <div className='container_car'>
+                <div className="car-detail">
 
-                {car ? (
-                    <Box>
-                        <div className="car-detail__header">
-                            <h2>{car.name}</h2>
-                            <p>Model: {car.model}</p>
-                            <p>Price: {car.price}</p>
-                        </div>
-                        <div className="car-detail__image">
-                            <img src={car.thumbnail} alt={car.name} />
-                        </div>
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <Button variant="contained" onClick={() => setIsCompareModalOpen(true)}>
-                                Compare Cars
-                            </Button>
-                            <Button variant="outlined" onClick={handleShowCarDetails}>
-                                {isDetailVisible ? 'Hide Details' : 'View Details'}
-                            </Button>
-                        </Box>
-                    </Box>
-                ) : (
-                    <p>Loading car details...</p>
-                )}
-
-                {isDetailVisible && car && (
-                    <Box sx={{ marginTop: 3 }}>
-                        <h3>Car Details</h3>
-                        <table className="car-detail__details">
-                            <thead>
-                                <tr>
-                                    <th>Specification</th>
-                                    <th>Details</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {car.specifications?.map((spec) => (
-                                    <React.Fragment key={spec.name}>
-                                        <tr>
-                                            <td
-                                                className="specification-row"
-                                                onClick={() => toggleSpecification(spec.name)}
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <span>{spec.name}</span>
-                                                <span>{spec.showAttributes ? '−' : '+'}</span>
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                        {spec.showAttributes && spec.attributes.map((attr) => (
-                                            <tr key={`${spec.name}-${attr.name}`}>
-                                                <td style={{ paddingLeft: '40px', fontStyle: 'italic' }}>{attr.name}</td>
-                                                <td>{attr.value}</td>
-                                            </tr>
-                                        ))}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-
-                        </table>
-                    </Box>
-                )}
-
-                {/* Compare Modal */}
-                <Modal open={isCompareModalOpen} onClose={handleCloseModal}>
-                    <Box sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '60%',
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                        overflowY: 'auto',
-                        maxHeight: '90vh',
-                    }}>
-                        <h2>Compare Cars</h2>
-                        <TextField
-                            fullWidth
-                            label="Search cars"
-                            placeholder="Enter car name or model"
-                            onChange={handleSearchChange}
-                            sx={{ marginBottom: 2 }}
-                        />
-
+                    {car ? (
                         <Box>
-                            {filteredCars.map((filteredCar) => (
-                                <Box
-                                    key={filteredCar.id}
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '8px',
-                                        borderBottom: '1px solid #ddd',
-                                    }}
-                                >
-                                    <span>{filteredCar.name} - {filteredCar.model}</span>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => handleAddToComparison(filteredCar)}
-                                    >
-                                        Add to Comparison
-                                    </Button>
-                                </Box>
-                            ))}
+                            <div className="car-detail__header">
+                                <h2>{car.name}</h2>
+                                <p>Model: {car.model}</p>
+                                <p>Price: {car.price}</p>
+                            </div>
+                            <div className="car-detail__image">
+                                <img src={car.thumbnail} alt={car.name} />
+                            </div>
+                            <Box sx={{ display: 'flex', gap: 2, marginTop: 3 }}>
+                                <Button variant="contained" onClick={() => setIsCompareModalOpen(true)}>
+                                    So Sánh
+                                </Button>
+                                <Button variant="outlined" onClick={handleShowCarDetails}>
+                                    {isDetailVisible ? 'Ẩn' : 'Thông số chi tiết'}
+                                </Button>
+                            </Box>
                         </Box>
+                    ) : (
+                        <p>Loading car details...</p>
+                    )}
 
-                        <h3>Selected Cars for Comparison:</h3>
-                        {compareCars.length > 0 ? (
-                            compareCars.map((compareCar) => (
-                                <Box
-                                    key={compareCar.id}
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '8px',
-                                        borderBottom: '1px solid #ddd',
-                                    }}
-                                >
-                                    <span>{compareCar.name} - {compareCar.model}</span>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleRemoveFromComparison(compareCar.id)}
+                    {isDetailVisible && car && (
+                        <Box sx={{ marginTop: 3 }}>
+                            <h3>Thông số xe</h3>
+                            <table className="car-detail__details">
+                                <thead>
+                                    <tr>
+                                        <th>Thông số kỹ thuật</th>
+                                        <th>Chi tiết</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {car.specifications?.map((spec) => (
+                                        <React.Fragment key={spec.name}>
+                                            <tr>
+                                                <td
+                                                    className="specification-row"
+                                                    onClick={() => toggleSpecification(spec.name)}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                    }}
+                                                >
+                                                    <span>{spec.name}</span>
+                                                    <span>{spec.showAttributes ? '−' : '+'}</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            {spec.showAttributes && spec.attributes.map((attr) => (
+                                                <tr key={`${spec.name}-${attr.name}`}>
+                                                    <td style={{ paddingLeft: '40px', fontStyle: 'italic' }}>{attr.name}</td>
+                                                    <td>{attr.value}</td>
+                                                </tr>
+                                            ))}
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+
+                            </table>
+                        </Box>
+                    )}
+
+                    {/* Compare Modal */}
+                    <Modal open={isCompareModalOpen} onClose={handleCloseModal}>
+                        <Box sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '60%',
+                            bgcolor: 'background.paper',
+                            boxShadow: 24,
+                            p: 4,
+                            overflowY: 'auto',
+                            maxHeight: '90vh',
+                        }}>
+                            <h2>Tìm kiếm</h2>
+                            <TextField
+                                fullWidth
+                                // label="Search cars"
+                                placeholder="Enter car name or model"
+                                onChange={handleSearchChange}
+                                sx={{ marginBottom: 2 }}
+                            />
+
+                            <Box>
+                                {filteredCars.map((filteredCar) => (
+                                    <Box
+                                        key={filteredCar.id}
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            padding: '8px',
+                                            borderBottom: '1px solid #ddd',
+                                        }}
                                     >
-                                        Remove
-                                    </Button>
-                                </Box>
-                            ))
-                        ) : (
-                            <p>No cars selected for comparison.</p>
-                        )}
+                                        <span>{filteredCar.name} - {filteredCar.model}</span>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => handleAddToComparison(filteredCar)}
+                                        >
+                                            Thêm
+                                        </Button>
+                                    </Box>
+                                ))}
+                            </Box>
 
-                        <Box sx={{ marginTop: 2, textAlign: 'center' }}>
-                            <Button variant="contained" onClick={handleShowComparison}>
-                                Show Comparison Table
+                            <h3>Những chiếc xe bạn chọn:</h3>
+                            {compareCars.length > 0 ? (
+                                compareCars.map((compareCar) => (
+                                    <Box
+                                        key={compareCar.id}
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            padding: '8px',
+                                            borderBottom: '1px solid #ddd',
+                                        }}
+                                    >
+                                        <span>{compareCar.name} - {compareCar.model}</span>
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            onClick={() => handleRemoveFromComparison(compareCar.id)}
+                                        >
+                                            Xoá
+                                        </Button>
+                                    </Box>
+                                ))
+                            ) : (
+                                <p>Không chiếc xe nào được chọn.</p>
+                            )}
+
+                            <Box sx={{ marginTop: 2, textAlign: 'center' }}>
+                                <Button variant="contained" onClick={handleShowComparison}>
+                                    So sánh
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Modal>
+
+                    {comparisonData.initialCar && comparisonData.compareCars.length > 0 && (
+                        <Box sx={{ marginTop: 3 }}>
+                            <h3>Bảng so sánh</h3>
+                            <table className="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Thuộc tính</th>
+                                        <th>{comparisonData.initialCar.name}</th>
+                                        {comparisonData.compareCars.map((compareCar) => (
+                                            <th key={compareCar.id}>{compareCar.name}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {comparisonData.initialCar.specifications?.flatMap((spec) =>
+                                        spec.attributes.map((attr) => (
+                                            <tr key={`${spec.name}-${attr.name}`}>
+                                                <td>{`${spec.name}: ${attr.name}`}</td>
+                                                <td>{attr.value}</td>
+                                                {comparisonData.compareCars.map((compareCar) => {
+                                                    const compareSpec = compareCar.specifications.find(
+                                                        (s) => s.name === spec.name
+                                                    );
+                                                    const compareAttr = compareSpec?.attributes.find(
+                                                        (a) => a.name === attr.name
+                                                    );
+                                                    return <td key={`${compareCar.id}-${attr.name}`}>{compareAttr?.value || '-'}</td>;
+                                                })}
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => setComparisonData({})}
+                                sx={{ marginTop: 2 }}
+                            >
+                                Đóng
                             </Button>
                         </Box>
-                    </Box>
-                </Modal>
 
-                {comparisonData.initialCar && comparisonData.compareCars.length > 0 && (
-                    <Box sx={{ marginTop: 3 }}>
-                        <h3>Comparison Table</h3>
-                        <table className="comparison-table">
-                            <thead>
-                                <tr>
-                                    <th>Attribute</th>
-                                    <th>{comparisonData.initialCar.name}</th>
-                                    {comparisonData.compareCars.map((compareCar) => (
-                                        <th key={compareCar.id}>{compareCar.name}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {comparisonData.initialCar.specifications?.flatMap((spec) =>
-                                    spec.attributes.map((attr) => (
-                                        <tr key={`${spec.name}-${attr.name}`}>
-                                            <td>{`${spec.name}: ${attr.name}`}</td>
-                                            <td>{attr.value}</td>
-                                            {comparisonData.compareCars.map((compareCar) => {
-                                                const compareSpec = compareCar.specifications.find(
-                                                    (s) => s.name === spec.name
-                                                );
-                                                const compareAttr = compareSpec?.attributes.find(
-                                                    (a) => a.name === attr.name
-                                                );
-                                                return <td key={`${compareCar.id}-${attr.name}`}>{compareAttr?.value || '-'}</td>;
-                                            })}
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                        <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => setComparisonData({})}
-                            sx={{ marginTop: 2 }}
-                        >
-                            Close Comparison Table
-                        </Button>
-                    </Box>
-
-                )}
+                    )}
+                </div>
             </div>
+
         </>
     );
 };
